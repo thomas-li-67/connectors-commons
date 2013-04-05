@@ -8,6 +8,8 @@
 
 package org.mule.commons.jersey;
 
+import java.util.Arrays;
+
 import com.sun.jersey.api.client.ClientResponse;
 
 /**
@@ -24,7 +26,7 @@ public class DefaultResponseHandler implements ResponseHandler {
 
 	@Override
 	public <T> T onFailure(ClientResponse response, int status, int[] expectedStatus) {
-		throw new RuntimeException(String.format("Got status %d but was expecting one of [%s]", status, expectedStatus.toString()));
+		throw new RuntimeException(String.format("Got status %d but was expecting one of [%s]", status, Arrays.toString(expectedStatus))); 
 	}
 	
 	@Override
