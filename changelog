@@ -1,3 +1,8 @@
+1.2
+----
+
+* Making Jersey dependencies provided
+* Adding an InvalidResponseException type to the DefaultResponseHandler so that better information is obtained in case of failures
 
 1.1
 ----
