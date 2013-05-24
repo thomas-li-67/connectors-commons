@@ -9,6 +9,7 @@
 package org.mule.commons.jersey;
 
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.GenericType;
 
 /**
  * 
@@ -18,6 +19,8 @@ import com.sun.jersey.api.client.ClientResponse;
 public interface ResponseHandler {
 	
 	public <T> T onSuccess(ClientResponse response, Class<T> entityType);
+	
+	public <T> T onSuccess(ClientResponse response, GenericType<T> type);
 	
 	public <T> T onFailure(ClientResponse response, int status, int[] expectedStatus);
 	

@@ -17,6 +17,8 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import org.apache.commons.io.IOUtils;
+
 import com.google.gson.Gson;
 
 /**
@@ -48,17 +50,22 @@ public class GsonProvider implements MessageBodyWriter<Object>, MessageBodyReade
 			InputStream entityStream) throws IOException,
 			WebApplicationException {
 		
-		InputStreamReader streamReader = new InputStreamReader(entityStream, UTF_8);
-		try {
-			Type jsonType;
-			if (type.equals(genericType)) {
-				jsonType = type;
-			} else {
-				jsonType = genericType;
+		Type jsonType;
+		if (type.equals(genericType)) {
+			jsonType = type;
+		} else {
+			jsonType = genericType;
+		}
+			
+		if (jsonType.equals(String.class)) {
+			return IOUtils.toString(entityStream);
+		} else {
+			InputStreamReader streamReader = new InputStreamReader(entityStream, UTF_8);
+			try {
+				return this.gson.fromJson(streamReader, jsonType);
+			} finally {
+				IOUtils.closeQuietly(entityStream);
 			}
-			return this.gson.fromJson(streamReader, jsonType);
-		} finally {
-			streamReader.close();
 		}
 	}
 

@@ -11,6 +11,7 @@ package org.mule.commons.jersey;
 import org.mule.commons.jersey.exception.InvalidResponseException;
 
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.GenericType;
 
 /**
  * 
@@ -22,6 +23,11 @@ public class DefaultResponseHandler implements ResponseHandler {
 	@Override
 	public <T> T onSuccess(ClientResponse response, Class<T> entityType) {
 		return response.getEntity(entityType);
+	}
+	
+	@Override
+	public <T> T onSuccess(ClientResponse response, GenericType<T> type) {
+		return response.getEntity(type);
 	}
 
 	@Override

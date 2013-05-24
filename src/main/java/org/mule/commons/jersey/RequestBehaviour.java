@@ -8,6 +8,7 @@
 
 package org.mule.commons.jersey;
 
+import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 
 /**
@@ -18,5 +19,7 @@ import com.sun.jersey.api.client.WebResource;
 public interface RequestBehaviour {
 	
 	public <T> WebResource.Builder behave(WebResource.Builder builder, String method, Class<T> entityClass);
+	
+	public <T> WebResource.Builder behave(WebResource.Builder builder, String method, GenericType<T> type);
 
 }
