@@ -41,7 +41,7 @@ public enum ResponseStatusExceptionMapper {
         try {
             throw exceptionClass.getConstructor(Response.class).newInstance(response);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            throw new InternalServerErrorException(response);
+            throw new InternalServerErrorException(response, e);
         }
     }
 }

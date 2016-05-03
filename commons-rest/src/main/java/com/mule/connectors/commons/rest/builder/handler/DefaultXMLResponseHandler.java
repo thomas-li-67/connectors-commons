@@ -26,6 +26,7 @@ public class DefaultXMLResponseHandler<T> implements ResponseHandler<T> {
                 ResponseStatusExceptionMapper.valueOf(status.name()).throwException(response);
             } catch (IllegalArgumentException unmappedStatusException) {
                 try {
+                    logger.warn("Throwing a unmapped status code exception.", unmappedStatusException);
                     ResponseStatusExceptionMapper.valueOf(family.name()).throwException(response);
                 } catch (IllegalArgumentException unmappedFamilyException) {
                     throw new WebApplicationException(unmappedFamilyException, response);
