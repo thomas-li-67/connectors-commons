@@ -1,10 +1,10 @@
-package com.mulesoft.commons.connectors.rest.builder;
+package com.mule.connectors.commons.rest.builder;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import com.mulesoft.commons.connectors.rest.builder.handler.DefaultXMLResponseHandler;
-import com.mulesoft.commons.connectors.rest.builder.handler.ResponseHandler;
-import com.mulesoft.commons.connectors.rest.builder.strategy.*;
+import com.mule.connectors.commons.rest.builder.handler.DefaultXMLResponseHandler;
+import com.mule.connectors.commons.rest.builder.handler.ResponseHandler;
+import com.mule.connectors.commons.rest.builder.strategy.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 /**
  * Builder class for http requests.<br>
  * To use the requests do the following:<br>
- * 
+ * <p>
  * <pre>
  * // GET request.
  * RequestBuilder.get(client, &quot;http://mypath.com/endpoint/action&quot;).execute();
@@ -36,7 +36,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
  * // DELETE request.
  * RequestBuilder.delete(client, &quot;http://mypath.com/endpoint/action&quot;).execute();
  * </pre>
- * 
+ * <p>
  * The static methods generate an instance of this builder and allow the following:
  * <ul>
  * <li>Addition of query parameters by using the {@link RequestBuilder#queryParam(String, Object)} or through a {@link MultivaluedMap}.</li>
@@ -47,12 +47,9 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
  * <li>Handling the {@link Response} object using a {@link ResponseHandler}.</li>
  * <li>Setting headers using {@link RequestBuilder#header(String, Object)}.</li>
  * </ul>
- * 
- * 
- * @author gaston.ortiz@mulesoft.com
  *
- * @param <T>
- *            The type response.
+ * @param <T> The type response.
+ * @author gaston.ortiz@mulesoft.com
  */
 public class RequestBuilder<T> {
 

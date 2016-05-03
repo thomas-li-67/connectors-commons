@@ -1,4 +1,4 @@
-package com.mulesoft.commons.connectors.rest.builder.strategy;
+package com.mule.connectors.commons.rest.builder.strategy;
 
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.core.Response;

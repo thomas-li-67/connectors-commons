@@ -1,4 +1,4 @@
-package com.mulesoft.commons.connectors.rest.builder.handler;
+package com.mule.connectors.commons.rest.builder.handler;
 
 import java.lang.reflect.InvocationTargetException;
 

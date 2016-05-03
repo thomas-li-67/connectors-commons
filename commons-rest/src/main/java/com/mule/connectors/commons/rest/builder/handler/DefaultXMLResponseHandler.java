@@ -1,4 +1,4 @@
-package com.mulesoft.commons.connectors.rest.builder.handler;
+package com.mule.connectors.commons.rest.builder.handler;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;

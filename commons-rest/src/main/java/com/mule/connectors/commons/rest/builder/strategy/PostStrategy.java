@@ -1,6 +1,4 @@
-package com.mulesoft.commons.connectors.rest.builder.strategy;
-
-import com.mulesoft.commons.connectors.rest.builder.strategy.RequestMethodStrategy;
+package com.mule.connectors.commons.rest.builder.strategy;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
