@@ -97,7 +97,9 @@ public class RequestBuilder<T> {
     }
 
     public RequestBuilder<T> queryParams(MultivaluedMap<String, String> queryParams) {
-        this.queryParams.putAll(queryParams);
+        for (Entry<String, List<String>> entry : queryParams.entrySet()) {
+            queryParam(entry.getKey(), entry.getValue() == null || entry.getValue().isEmpty()? null : entry.getValue().get(0));
+        }
         return this;
     }
 
