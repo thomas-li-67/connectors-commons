@@ -37,11 +37,7 @@ public enum ResponseStatusExceptionMapper {
         this.exceptionClass = exceptionClass;
     }
 
-    public void throwException(Response response) {
-        try {
-            throw exceptionClass.getConstructor(Response.class).newInstance(response);
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            throw new InternalServerErrorException(response, e);
-        }
+    public WebApplicationException createException(Response response) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        return exceptionClass.getDeclaredConstructor(Response.class).newInstance(response);
     }
 }
