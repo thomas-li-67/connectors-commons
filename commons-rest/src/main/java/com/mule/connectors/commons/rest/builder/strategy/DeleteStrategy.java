@@ -14,9 +14,4 @@ public final class DeleteStrategy implements RequestMethodStrategy {
     public Response execute(Builder requestBuilder, Object entity, String contentType) {
         return requestBuilder.delete();
     }
-
-    @Override
-    public String toString() {
-        return "DELETE";
-    }
 }

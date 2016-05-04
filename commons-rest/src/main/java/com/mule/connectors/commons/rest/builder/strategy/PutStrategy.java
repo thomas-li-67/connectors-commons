@@ -15,9 +15,4 @@ public final class PutStrategy implements RequestMethodStrategy {
     public Response execute(Builder requestBuilder, Object entity, String contentType) {
         return requestBuilder.put(Entity.entity(entity, contentType));
     }
-
-    @Override
-    public String toString() {
-        return "PUT";
-    }
 }

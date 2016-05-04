@@ -14,9 +14,4 @@ public final class GetStrategy implements RequestMethodStrategy {
     public Response execute(Builder requestBuilder, Object entity, String contentType) {
         return requestBuilder.get();
     }
-
-    @Override
-    public String toString() {
-        return "GET";
-    }
 }
