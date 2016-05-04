@@ -135,7 +135,8 @@ public class RequestBuilder<T> {
         for (Entry<String, List<String>> entry : queryParams.entrySet()) {
             target = target.queryParam(entry.getKey(), entry.getValue().toArray()[0]);
         }
-        logger.debug("Target path is: {} {}", method, target.getUri());
+        logger.debug("Request strategy is {}", method.getClass().getSimpleName());
+        logger.debug("Target path is: {}", target.getUri());
 
         // Adding headers.
         Builder requestBuilder = target.request().accept(accept);

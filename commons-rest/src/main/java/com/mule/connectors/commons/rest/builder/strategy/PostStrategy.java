@@ -15,9 +15,4 @@ public final class PostStrategy implements RequestMethodStrategy {
     public Response execute(Builder requestBuilder, Object entity, String contentType) {
         return requestBuilder.post(Entity.entity(entity, contentType));
     }
-
-    @Override
-    public String toString() {
-        return "POST";
-    }
 }
