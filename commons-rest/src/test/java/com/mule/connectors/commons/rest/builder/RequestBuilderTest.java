@@ -4,9 +4,9 @@ import com.google.common.collect.ImmutableMap;
 import com.mule.connectors.commons.rest.builder.handler.ResponseHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.easymock.EasyMock;
+import org.glassfish.hk2.utilities.reflection.ParameterizedTypeImpl;
 import org.junit.Before;
 import org.junit.Test;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
@@ -17,7 +17,6 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.HashMap;
@@ -118,7 +117,7 @@ public class RequestBuilderTest {
 
     @Test
     public void testTypedResponseType() {
-        validator.responseType = ParameterizedTypeImpl.make(Map.class, new Class<?>[]{String.class, Object.class}, null);
+        validator.responseType = new ParameterizedTypeImpl(Map.class, String.class, Object.class);
         validator.validateGet();
     }
 
