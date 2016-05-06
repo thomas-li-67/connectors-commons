@@ -15,6 +15,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.DatatypeConverter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +90,10 @@ public class RequestBuilder<T> {
         return this;
     }
 
+    public RequestBuilder<T> basicAuthorization(String username, String password) {
+        return header("Authorization", String.format("Basic %s", DatatypeConverter.printBase64Binary(String.format("%s:%s", username, password).getBytes())));
+    }
+
     public RequestBuilder<T> queryParam(String key, Object value) {
         if (Optional.fromNullable(value).isPresent() && StringUtils.isNotEmpty(value.toString())) {
             queryParams.put(key, Lists.newArrayList(value.toString()));
@@ -98,7 +103,7 @@ public class RequestBuilder<T> {
 
     public RequestBuilder<T> queryParams(MultivaluedMap<String, String> queryParams) {
         for (Entry<String, List<String>> entry : queryParams.entrySet()) {
-            queryParam(entry.getKey(), entry.getValue() == null || entry.getValue().isEmpty()? null : entry.getValue().get(0));
+            queryParam(entry.getKey(), entry.getValue() == null || entry.getValue().isEmpty() ? null : entry.getValue().get(0));
         }
         return this;
     }
