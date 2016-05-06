@@ -6,7 +6,6 @@ import com.mule.connectors.commons.rest.builder.handler.DefaultXMLResponseHandle
 import com.mule.connectors.commons.rest.builder.handler.ResponseHandler;
 import com.mule.connectors.commons.rest.builder.strategy.*;
 import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.internal.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +15,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.DatatypeConverter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +91,7 @@ public class RequestBuilder<T> {
     }
 
     public RequestBuilder<T> basicAuthorization(String username, String password) {
-        return header("Authorization", String.format("Basic %s", Base64.encodeAsString(String.format("%s:%s", username, password))));
+        return header("Authorization", String.format("Basic %s", DatatypeConverter.printBase64Binary(String.format("%s:%s", username, password).getBytes())));
     }
 
     public RequestBuilder<T> queryParam(String key, Object value) {

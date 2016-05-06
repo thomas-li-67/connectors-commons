@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.mule.connectors.commons.rest.builder.handler.ResponseHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.easymock.EasyMock;
-import org.glassfish.jersey.internal.util.Base64;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.DatatypeConverter;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -210,7 +210,8 @@ public class RequestBuilderTest {
             }
             if (username != null || password != null) {
                 requestBuilder.basicAuthorization(username, password);
-                expect(invocationBuilder.header(eq("Authorization"), eq(String.format("Basic %s", Base64.encodeAsString(String.format("%s:%s", username, password)))))).andReturn(
+                expect(invocationBuilder.header(eq("Authorization"),
+                        eq(String.format("Basic %s", DatatypeConverter.printBase64Binary(String.format("%s:%s", username, password).getBytes()))))).andReturn(
                         invocationBuilder);
             }
             requestBuilder.entity(entity);
