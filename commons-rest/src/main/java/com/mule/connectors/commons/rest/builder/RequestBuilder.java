@@ -16,6 +16,7 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +65,7 @@ public class RequestBuilder<T> {
     private Object entity;
     private String contentType = APPLICATION_XML;
     private String accept = APPLICATION_XML;
-    private Class<T> responseType;
+    private Type responseType;
     private ResponseHandler<T> responseHandler = new DefaultXMLResponseHandler<>();
 
     private RequestBuilder(Client client, RequestMethodStrategy method, String path) {
@@ -73,7 +74,7 @@ public class RequestBuilder<T> {
         this.path = path;
     }
 
-    public RequestBuilder<T> responseType(Class<T> responseType) {
+    public RequestBuilder<T> responseType(Type responseType) {
         this.responseType = responseType;
         return this;
     }

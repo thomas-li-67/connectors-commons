@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
@@ -16,6 +17,8 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -114,6 +117,12 @@ public class RequestBuilderTest {
     }
 
     @Test
+    public void testTypedResponseType() {
+        validator.responseType = ParameterizedTypeImpl.make(Map.class, new Class<?>[]{String.class, Object.class}, null);
+        validator.validateGet();
+    }
+
+    @Test
     public void testGetEntity() {
         validator.entity = ImmutableMap.builder().put("test", "test").put("test2", "test2");
         validator.validateGet();
@@ -148,7 +157,7 @@ public class RequestBuilderTest {
         private Object entity;
         private String contentType;
         private String accept;
-        private Class responseType;
+        private Type responseType;
 
         public Validator() {
             response = createMock(Response.class);
