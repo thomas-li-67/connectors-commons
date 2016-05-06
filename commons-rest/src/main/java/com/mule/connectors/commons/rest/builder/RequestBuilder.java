@@ -6,6 +6,7 @@ import com.mule.connectors.commons.rest.builder.handler.DefaultXMLResponseHandle
 import com.mule.connectors.commons.rest.builder.handler.ResponseHandler;
 import com.mule.connectors.commons.rest.builder.strategy.*;
 import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.internal.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,6 +90,10 @@ public class RequestBuilder<T> {
         return this;
     }
 
+    public RequestBuilder<T> basicAuthorization(String username, String password) {
+        return header("Authorization", String.format("Basic %s", Base64.encodeAsString(String.format("%s:%s", username, password))));
+    }
+
     public RequestBuilder<T> queryParam(String key, Object value) {
         if (Optional.fromNullable(value).isPresent() && StringUtils.isNotEmpty(value.toString())) {
             queryParams.put(key, Lists.newArrayList(value.toString()));
@@ -98,7 +103,7 @@ public class RequestBuilder<T> {
 
     public RequestBuilder<T> queryParams(MultivaluedMap<String, String> queryParams) {
         for (Entry<String, List<String>> entry : queryParams.entrySet()) {
-            queryParam(entry.getKey(), entry.getValue() == null || entry.getValue().isEmpty()? null : entry.getValue().get(0));
+            queryParam(entry.getKey(), entry.getValue() == null || entry.getValue().isEmpty() ? null : entry.getValue().get(0));
         }
         return this;
     }
