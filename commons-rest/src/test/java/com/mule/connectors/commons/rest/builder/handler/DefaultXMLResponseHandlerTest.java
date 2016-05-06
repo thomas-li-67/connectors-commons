@@ -1,18 +1,19 @@
 package com.mule.connectors.commons.rest.builder.handler;
 
 import org.easymock.EasyMock;
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-import java.io.FilePermission;
-import java.lang.reflect.ReflectPermission;
-import java.security.Permission;
 import java.util.Date;
 
 import static org.easymock.EasyMock.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
 
 public class DefaultXMLResponseHandlerTest {
 
@@ -36,10 +37,10 @@ public class DefaultXMLResponseHandlerTest {
         expect(statusType.getFamily()).andReturn(Response.Status.Family.SUCCESSFUL);
 
         expectedParsedResponse = new Date();
-        expect(response.readEntity(eq(expectedParsedResponse.getClass()))).andReturn(expectedParsedResponse);
+        expect(response.readEntity(anyObject(GenericType.class))).andReturn(expectedParsedResponse);
         replay(response, statusType);
 
-        Assert.assertEquals(expectedParsedResponse, new DefaultXMLResponseHandler().handleResponse(response, expectedParsedResponse.getClass()));
+        assertThat(new DefaultXMLResponseHandler().handleResponse(response, expectedParsedResponse.getClass()), instanceOf(expectedParsedResponse.getClass()));
     }
 
     @Test
