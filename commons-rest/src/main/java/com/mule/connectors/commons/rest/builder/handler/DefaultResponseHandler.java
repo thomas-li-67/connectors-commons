@@ -15,9 +15,9 @@ import com.google.common.base.Optional;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 
-public class DefaultXMLResponseHandler<T> implements ResponseHandler<T> {
+public class DefaultResponseHandler<T> implements ResponseHandler<T> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultXMLResponseHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultResponseHandler.class);
 
     @Override
     public T handleResponse(final Response response, final Type responseType) {

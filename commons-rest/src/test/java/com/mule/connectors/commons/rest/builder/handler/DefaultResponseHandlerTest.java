@@ -1,7 +1,6 @@
 package com.mule.connectors.commons.rest.builder.handler;
 
 import org.easymock.EasyMock;
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +14,7 @@ import static org.easymock.EasyMock.*;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
-public class DefaultXMLResponseHandlerTest {
+public class DefaultResponseHandlerTest {
 
     private Response response;
     private int responseStatusCode;
@@ -40,7 +39,7 @@ public class DefaultXMLResponseHandlerTest {
         expect(response.readEntity(anyObject(GenericType.class))).andReturn(expectedParsedResponse);
         replay(response, statusType);
 
-        assertThat(new DefaultXMLResponseHandler().handleResponse(response, expectedParsedResponse.getClass()), instanceOf(expectedParsedResponse.getClass()));
+        assertThat(new DefaultResponseHandler().handleResponse(response, expectedParsedResponse.getClass()), instanceOf(expectedParsedResponse.getClass()));
     }
 
     @Test
@@ -50,7 +49,7 @@ public class DefaultXMLResponseHandlerTest {
         expect(statusType.getFamily()).andReturn(Response.Status.Family.SUCCESSFUL);
         replay(response, statusType);
 
-        Assert.assertNull(new DefaultXMLResponseHandler().handleResponse(response, null));
+        Assert.assertNull(new DefaultResponseHandler().handleResponse(response, null));
     }
 
     @Test
@@ -60,7 +59,7 @@ public class DefaultXMLResponseHandlerTest {
         expect(statusType.getFamily()).andReturn(Response.Status.Family.SUCCESSFUL);
         replay(response, statusType);
 
-        Assert.assertNull(new DefaultXMLResponseHandler().handleResponse(response, null));
+        Assert.assertNull(new DefaultResponseHandler().handleResponse(response, null));
     }
 
     @Test(expected = ForbiddenException.class)
@@ -151,6 +150,6 @@ public class DefaultXMLResponseHandlerTest {
         expect(response.readEntity(eq(String.class))).andReturn("");
         replay(response, statusType);
 
-        new DefaultXMLResponseHandler().handleResponse(response, null);
+        new DefaultResponseHandler().handleResponse(response, null);
     }
 }
