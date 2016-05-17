@@ -2,7 +2,7 @@ package com.mule.connectors.commons.rest.builder;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import com.mule.connectors.commons.rest.builder.handler.DefaultXMLResponseHandler;
+import com.mule.connectors.commons.rest.builder.handler.DefaultResponseHandler;
 import com.mule.connectors.commons.rest.builder.handler.ResponseHandler;
 import com.mule.connectors.commons.rest.builder.strategy.*;
 import org.apache.commons.lang3.StringUtils;
@@ -66,7 +66,7 @@ public class RequestBuilder<T> {
     private String contentType = APPLICATION_XML;
     private String accept = APPLICATION_XML;
     private Type responseType;
-    private ResponseHandler<T> responseHandler = new DefaultXMLResponseHandler<>();
+    private ResponseHandler<T> responseHandler = new DefaultResponseHandler<>();
 
     private RequestBuilder(Client client, RequestMethodStrategy method, String path) {
         this.client = client;
