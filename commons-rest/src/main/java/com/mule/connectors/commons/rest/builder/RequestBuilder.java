@@ -1,28 +1,24 @@
 package com.mule.connectors.commons.rest.builder;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import com.mule.connectors.commons.rest.builder.handler.DefaultXMLResponseHandler;
 import com.mule.connectors.commons.rest.builder.handler.ResponseHandler;
-import com.mule.connectors.commons.rest.builder.strategy.*;
+import com.mule.connectors.commons.rest.builder.request.DeleteRequest;
+import com.mule.connectors.commons.rest.builder.request.GetRequest;
+import com.mule.connectors.commons.rest.builder.request.PostRequest;
+import com.mule.connectors.commons.rest.builder.request.PutRequest;
+import com.mule.connectors.commons.rest.builder.request.Request;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
 /**
  * Builder class for http requests.<br>
@@ -57,21 +53,14 @@ public class RequestBuilder<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestBuilder.class);
     private final Client client;
-    private final RequestMethodStrategy method;
-    private final String path;
-    private final Map<String, List<String>> headers = new HashMap<>();
-    private final Map<String, List<String>> queryParams = new HashMap<>();
-    private final Map<String, Object> pathParams = new HashMap<>();
-    private Object entity;
-    private String contentType = APPLICATION_XML;
-    private String accept = APPLICATION_XML;
+    private final Request request;
     private Type responseType;
     private ResponseHandler<T> responseHandler = new DefaultXMLResponseHandler<>();
 
-    private RequestBuilder(Client client, RequestMethodStrategy method, String path) {
+    private RequestBuilder(Client client, Request request, String path) {
         this.client = client;
-        this.method = method;
-        this.path = path;
+        this.request = request;
+        this.request.setPath(path);
     }
 
     public RequestBuilder<T> responseType(Type responseType) {
@@ -86,7 +75,7 @@ public class RequestBuilder<T> {
 
     public RequestBuilder<T> header(String key, Object value) {
         if (Optional.fromNullable(value).isPresent() && StringUtils.isNotEmpty(value.toString())) {
-            headers.put(key, Lists.newArrayList(value.toString()));
+            this.request.addHeader(key, value.toString());
         }
         return this;
     }
@@ -97,7 +86,7 @@ public class RequestBuilder<T> {
 
     public RequestBuilder<T> queryParam(String key, Object value) {
         if (Optional.fromNullable(value).isPresent() && StringUtils.isNotEmpty(value.toString())) {
-            queryParams.put(key, Lists.newArrayList(value.toString()));
+            this.request.addQueryParam(key, value.toString());
         }
         return this;
     }
@@ -110,50 +99,27 @@ public class RequestBuilder<T> {
     }
 
     public RequestBuilder<T> pathParam(String key, Object value) {
-        this.pathParams.put(key, value);
+        this.request.addPathParam(key, value);
         return this;
     }
 
     public RequestBuilder<T> entity(Object entity) {
-        this.entity = entity;
+        this.request.setEntity(entity);
         return this;
     }
 
     public RequestBuilder<T> accept(String accept) {
-        this.accept = accept;
+        this.request.setAccept(accept);
         return this;
     }
 
     public RequestBuilder<T> contentType(String contentType) {
-        this.contentType = contentType;
+        this.request.setContentType(contentType);
         return this;
     }
 
     public T execute() {
-
-        // Setting the path.
-        WebTarget target = client.target("").path(path);
-
-        // Resolving path params.
-        target = target.resolveTemplates(pathParams);
-
-        // Adding query params.
-        for (Entry<String, List<String>> entry : queryParams.entrySet()) {
-            target = target.queryParam(entry.getKey(), entry.getValue().toArray()[0]);
-        }
-        logger.debug("Request strategy is {}", method.getClass().getSimpleName());
-        logger.debug("Target path is: {}", target.getUri());
-
-        // Adding headers.
-        Builder requestBuilder = target.request().accept(accept);
-        for (Entry<String, List<String>> entry : headers.entrySet()) {
-            requestBuilder.header(entry.getKey(), entry.getValue().toArray()[0]);
-            logger.debug("Header: '{}': {}", entry.getKey(), entry.getValue().toArray()[0]);
-        }
-
-        // Executing the request.
-        final Response response = method.execute(requestBuilder, Optional.fromNullable(entity).or(new Form()), contentType);
-        logger.debug("Executed Request with Entity: {}", entity);
+        final Response response = request.execute(client);
 
         // Buffer the stream so that we may examine it again later in the case of an error.
         response.bufferEntity();
@@ -164,18 +130,18 @@ public class RequestBuilder<T> {
     }
 
     public static <T> RequestBuilder<T> get(Client client, String path) {
-        return new RequestBuilder<T>(client, new GetStrategy(), path);
+        return new RequestBuilder<T>(client, new GetRequest(), path);
     }
 
     public static <T> RequestBuilder<T> post(Client client, String path) {
-        return new RequestBuilder<T>(client, new PostStrategy(), path);
+        return new RequestBuilder<T>(client, new PostRequest(), path);
     }
 
     public static <T> RequestBuilder<T> put(Client client, String path) {
-        return new RequestBuilder<T>(client, new PutStrategy(), path);
+        return new RequestBuilder<T>(client, new PutRequest(), path);
     }
 
     public static <T> RequestBuilder<T> delete(Client client, String path) {
-        return new RequestBuilder<T>(client, new DeleteStrategy(), path);
+        return new RequestBuilder<T>(client, new DeleteRequest(), path);
     }
 }
