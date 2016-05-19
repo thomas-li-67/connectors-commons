@@ -9,6 +9,9 @@ import org.hamcrest.Matcher;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * {@link HeaderAssertion} that verifies that a determined header is present and contains the expected value.
+ */
 public class HeaderEquals extends HeaderAssertion {
 
     private final String expectedKey;

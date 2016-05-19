@@ -10,6 +10,9 @@ import org.hamcrest.Matcher;
 
 import javax.ws.rs.core.Response;
 
+/**
+ * Parent {@link Matcher} for all the Matchers defined on this class. The purpose of this interface is to map the mappers to json.
+ */
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,

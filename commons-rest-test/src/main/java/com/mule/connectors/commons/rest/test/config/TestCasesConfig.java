@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- *
+ * Default configuration Class for the API. It tries to load from a set config file and if it doesn't exist, then it will load the default configuration file.
  */
 public class TestCasesConfig {
 

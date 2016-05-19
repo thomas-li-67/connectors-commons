@@ -17,10 +17,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class in charge of loading the {@link TestCase}s from the directory defined on the {@link TestCasesConfig}.
+ */
 public class TestCasesProvider {
 
     private final TestCasesConfig config;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public TestCasesProvider(TestCasesConfig config) {
         this.config = config;
@@ -41,7 +44,7 @@ public class TestCasesProvider {
         for (File subDirectory : directory.listFiles(new DirectoryFilter())) {
             try {
                 cases.putAll(getCases(subDirectory));
-            } catch(NoTestCasesException e) {
+            } catch (NoTestCasesException e) {
                 suppressed.add(e);
             }
         }

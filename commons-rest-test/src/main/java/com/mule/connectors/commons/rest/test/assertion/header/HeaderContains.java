@@ -9,6 +9,9 @@ import org.hamcrest.Matcher;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * {@link HeaderAssertion} that verifies that a determined header is present.
+ */
 public class HeaderContains extends HeaderAssertion {
 
     private final Matcher<Iterable<? super String>> matcher;

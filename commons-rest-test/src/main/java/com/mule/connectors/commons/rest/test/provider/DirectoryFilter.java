@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileFilter;
 
 /**
+ * {@link FileFilter} that checks that the {@link File} is a directory.
  */
 public class DirectoryFilter implements FileFilter {
 

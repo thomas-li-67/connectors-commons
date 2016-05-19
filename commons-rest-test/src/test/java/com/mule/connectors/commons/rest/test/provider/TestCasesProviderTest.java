@@ -17,7 +17,7 @@ public class TestCasesProviderTest {
     @Test(expected = TestCasesDirectoryNotFoundException.class)
     public void getInexistingTestCasesFolderTest() {
         TestCasesConfig config = mock(TestCasesConfig.class);
-        expect(config.getTestCasesDirectory()).andReturn(new File("inexisting"));
+        expect(config.getTestCasesDirectory()).andReturn(new File("inexistent"));
         replay(config);
         new TestCasesProvider(config).getCases();
     }

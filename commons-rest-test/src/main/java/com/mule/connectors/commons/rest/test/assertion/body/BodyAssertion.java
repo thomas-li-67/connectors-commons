@@ -8,7 +8,7 @@ import org.hamcrest.Matcher;
 import javax.ws.rs.core.Response;
 
 /**
- *
+ * {@link Matcher} that applies a determined String Matcher to the body of a {@link Response}.
  */
 public class BodyAssertion extends BaseMatcher<Response> implements ResponseAssertion {
     private Matcher<String> matcher;
