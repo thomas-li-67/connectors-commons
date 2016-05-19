@@ -1,7 +1,7 @@
 package com.mule.connectors.commons.rest.builder;
 
 import com.google.common.base.Optional;
-import com.mule.connectors.commons.rest.builder.handler.DefaultXMLResponseHandler;
+import com.mule.connectors.commons.rest.builder.handler.DefaultResponseHandler;
 import com.mule.connectors.commons.rest.builder.handler.ResponseHandler;
 import com.mule.connectors.commons.rest.builder.request.DeleteRequest;
 import com.mule.connectors.commons.rest.builder.request.GetRequest;
@@ -55,7 +55,7 @@ public class RequestBuilder<T> {
     private final Client client;
     private final Request request;
     private Type responseType;
-    private ResponseHandler<T> responseHandler = new DefaultXMLResponseHandler<>();
+    private ResponseHandler<T> responseHandler = new DefaultResponseHandler<>();
 
     private RequestBuilder(Client client, Request request, String path) {
         this.client = client;
