@@ -16,8 +16,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class TestCase {
 
-    private Request request;
-    private List<ResponseAssertion> responseAssertions;
+    private final Request request;
+    private final List<ResponseAssertion> responseAssertions;
 
     @JsonCreator
     public TestCase(@JsonProperty(value = "request", required = true) Request request,
