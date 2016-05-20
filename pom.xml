@@ -9,6 +9,7 @@
 
     <modules>
         <module>commons-rest</module>
+        <module>commons-rest-test</module>
     </modules>
 
     <properties>
