@@ -68,5 +68,6 @@ public class TestCasesProviderTest {
         expect(config.getTestCasesDirectory()).andReturn(new File("src/test/resources/cases/ok"));
         replay(config);
         Assert.assertEquals(4, new TestCasesProvider(config).getCases().size());
+        verify(config);
     }
 }

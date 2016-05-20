@@ -55,6 +55,7 @@ public class DefaultResponseHandlerTest {
         replay(response, statusType);
 
         assertThat(new DefaultResponseHandler().handleResponse(response, expectedParsedResponse.getClass()), instanceOf(expectedParsedResponse.getClass()));
+        verify(response, statusType);
     }
 
     @Test
@@ -68,6 +69,7 @@ public class DefaultResponseHandlerTest {
         replay(response, statusType);
 
         assertThat(new DefaultResponseHandler().handleResponse(response, new ParameterizedTypeImpl(Map.class, String.class, Object.class)), instanceOf(Map.class));
+        verify(response, statusType);
     }
 
     @Test
@@ -78,6 +80,7 @@ public class DefaultResponseHandlerTest {
         replay(response, statusType);
 
         Assert.assertNull(new DefaultResponseHandler().handleResponse(response, null));
+        verify(response, statusType);
     }
 
     @Test
@@ -88,6 +91,7 @@ public class DefaultResponseHandlerTest {
         replay(response, statusType);
 
         Assert.assertNull(new DefaultResponseHandler().handleResponse(response, null));
+        verify(response, statusType);
     }
 
     @Test(expected = ForbiddenException.class)

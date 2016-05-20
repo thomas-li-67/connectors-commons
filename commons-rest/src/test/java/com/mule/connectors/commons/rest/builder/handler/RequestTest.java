@@ -27,6 +27,7 @@ public class RequestTest {
         expect(mock.put(same(DEFAULT_KEY), eq(DEFAULT_VALUE))).andReturn(null);
         replay(mock);
         this.request.addQueryParam(DEFAULT_KEY, DEFAULT_VALUE);
+        verify(mock);
     }
 
     @Test
@@ -36,6 +37,7 @@ public class RequestTest {
         expect(mock.put(same(DEFAULT_KEY), eq(DEFAULT_VALUE))).andReturn(null);
         replay(mock);
         this.request.addHeader(DEFAULT_KEY, DEFAULT_VALUE);
+        verify(mock);
     }
 
     @Test
@@ -45,5 +47,6 @@ public class RequestTest {
         expect(mock.put(same(DEFAULT_KEY), eq(DEFAULT_VALUE))).andReturn(null);
         replay(mock);
         this.request.addPathParam(DEFAULT_KEY, DEFAULT_VALUE);
+        verify(mock);
     }
 }
