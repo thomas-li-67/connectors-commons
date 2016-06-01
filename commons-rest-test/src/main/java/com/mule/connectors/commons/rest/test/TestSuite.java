@@ -3,12 +3,10 @@ package com.mule.connectors.commons.rest.test;
 import com.mule.connectors.commons.rest.test.config.TestCasesConfig;
 import com.mule.connectors.commons.rest.test.provider.TestCasesProvider;
 import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.filter.LoggingFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,12 +30,10 @@ public class TestSuite implements Runnable {
 
         // Execute request.
         Map<String, TestCaseResult> results = new HashMap<>();
-        ClientConfig clientConfig = new ClientConfig();
-        clientConfig.register(new LoggingFilter(java.util.logging.Logger.getLogger(getClass().getSimpleName()), true));
-        Client client = ClientBuilder.newClient(clientConfig);
+        Client client = new ClientConfig(java.util.logging.Logger.getLogger(getClass().getSimpleName())).getClient();
 
         for (Map.Entry<String, TestCase> entry : cases.entrySet()) {
-            results.put(entry.getKey(), entry.getValue().execute(client));
+            results.put(entry.getKey(), entry.getValue().execute(client, config));
         }
 
         // Present results.

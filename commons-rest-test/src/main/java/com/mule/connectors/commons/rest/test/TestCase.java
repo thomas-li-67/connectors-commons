@@ -3,10 +3,11 @@ package com.mule.connectors.commons.rest.test;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mule.connectors.commons.rest.builder.request.Request;
-import com.mule.connectors.commons.rest.test.assertion.ResponseAssertion;
+import com.mule.connectors.commons.rest.test.assertion.RequestAndResponse;
+import com.mule.connectors.commons.rest.test.assertion.RequestAndResponseAssertion;
+import com.mule.connectors.commons.rest.test.config.TestCasesConfig;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,21 +18,21 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class TestCase {
 
     private final Request request;
-    private final List<ResponseAssertion> responseAssertions;
+    private final List<RequestAndResponseAssertion> responseAssertions;
 
     @JsonCreator
     public TestCase(@JsonProperty(value = "request", required = true) Request request,
-            @JsonProperty(value = "assertions", required = true) List<ResponseAssertion> responseAssertions) {
+            @JsonProperty(value = "assertions", required = true) List<RequestAndResponseAssertion> responseAssertions) {
         this.request = request;
         this.responseAssertions = responseAssertions;
     }
 
-    public TestCaseResult execute(Client client) {
+    public TestCaseResult execute(Client client, TestCasesConfig config) {
         TestCaseResult result = new TestCaseResult();
-        Response response = request.execute(client);
-        for (ResponseAssertion responseAssertion : responseAssertions) {
+        RequestAndResponse requestAndResponse = new RequestAndResponse(request, request.execute(client));
+        for (RequestAndResponseAssertion responseAssertion : responseAssertions) {
             try {
-                assertThat(response, responseAssertion);
+                assertThat(requestAndResponse, responseAssertion);
             } catch (AssertionError e) {
                 result.addError(e.getLocalizedMessage());
             }

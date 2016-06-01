@@ -74,6 +74,34 @@ public abstract class Request {
 
     protected abstract Response doExecute(Invocation.Builder requestBuilder, Object entity, String contentType);
 
+    public String getPath() {
+        return path;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public Map<String, String> getQueryParams() {
+        return queryParams;
+    }
+
+    public Map<String, Object> getPathParams() {
+        return pathParams;
+    }
+
+    public Object getEntity() {
+        return entity;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public String getAccept() {
+        return accept;
+    }
+
     public void setPath(String path) {
         this.path = path;
     }

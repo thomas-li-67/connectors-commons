@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hamcrest.core.StringContains;
 
 /**
- * {@link BodyAssertion} that verifies that the body contains the expected value.
+ * {@link ResponseBodyAssertion} that verifies that the body contains the expected value.
  */
-public class Contains extends BodyAssertion {
+public class Contains extends ResponseBodyAssertion {
 
     @JsonCreator
     public Contains(@JsonProperty(value = "expected", required = true) String expectedValue) {
