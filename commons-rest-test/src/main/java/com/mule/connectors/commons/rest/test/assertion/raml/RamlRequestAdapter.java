@@ -30,9 +30,8 @@ public class RamlRequestAdapter implements RamlRequest {
 
     @Override
     public String getMethod() {
-        Class<? extends Request> requestClass = request.getClass();
-        for (JsonSubTypes.Type type : requestClass.getAnnotation(JsonSubTypes.class).value()) {
-            if (type.value().equals(requestClass)) {
+        for (JsonSubTypes.Type type : Request.class.getAnnotation(JsonSubTypes.class).value()) {
+            if (type.value().equals(request.getClass())) {
                 return type.name();
             }
         }

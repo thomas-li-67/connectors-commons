@@ -69,6 +69,10 @@ public abstract class Request {
         // Executing the request.
         Response response = doExecute(requestBuilder, Optional.fromNullable(entity).or(new Form()), contentType);
         logger.debug("Executed Request with Entity: {}", entity);
+
+        // Buffer the stream so that we may examine it again later in the case of an error.
+        response.bufferEntity();
+        logger.debug("Response buffered.");
         return response;
     }
 

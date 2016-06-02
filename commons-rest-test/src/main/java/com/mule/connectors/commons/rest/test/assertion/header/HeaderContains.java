@@ -26,7 +26,8 @@ public class HeaderContains extends ResponseHeaderAssertion {
         return matcher.matches(headers.keySet());
     }
 
-    @Override public void describeTo(Description description) {
+    @Override
+    public void describeTo(Description description) {
         matcher.describeTo(description);
     }
 }

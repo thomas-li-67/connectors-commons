@@ -20,11 +20,20 @@ public class ResponseBodyAssertion extends BaseMatcher<RequestAndResponse> imple
 
     @Override
     public boolean matches(Object item) {
-        return matcher.matches(RequestAndResponse.class.cast(item).getResponse().readEntity(String.class));
+        return matcher.matches(getResponse(item).readEntity(String.class));
     }
 
     @Override
     public void describeTo(Description description) {
         matcher.describeTo(description);
+    }
+
+    @Override
+    public void describeMismatch(Object item, Description description) {
+        super.describeMismatch(getResponse(item), description);
+    }
+
+    private Response getResponse(Object item) {
+        return RequestAndResponse.class.cast(item).getResponse();
     }
 }

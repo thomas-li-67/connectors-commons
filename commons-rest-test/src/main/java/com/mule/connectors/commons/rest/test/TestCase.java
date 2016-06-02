@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mule.connectors.commons.rest.builder.request.Request;
 import com.mule.connectors.commons.rest.test.assertion.RequestAndResponse;
 import com.mule.connectors.commons.rest.test.assertion.RequestAndResponseAssertion;
-import com.mule.connectors.commons.rest.test.config.TestCasesConfig;
 
 import javax.ws.rs.client.Client;
 import java.util.List;
@@ -27,7 +26,7 @@ public class TestCase {
         this.responseAssertions = responseAssertions;
     }
 
-    public TestCaseResult execute(Client client, TestCasesConfig config) {
+    public TestCaseResult execute(Client client) {
         TestCaseResult result = new TestCaseResult();
         RequestAndResponse requestAndResponse = new RequestAndResponse(request, request.execute(client));
         for (RequestAndResponseAssertion responseAssertion : responseAssertions) {

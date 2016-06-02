@@ -1,0 +1,16 @@
+#%RAML 0.8
+title: Test
+baseUri: http://www.google.com
+/a:
+  get:
+    displayName: Test
+    description: Test endpoint.
+    queryParameters:
+      q:
+        displayName: Viva Peron
+        description: Viva Peron
+        type: string
+    responses:
+      200:
+        description: |
+          Successful call

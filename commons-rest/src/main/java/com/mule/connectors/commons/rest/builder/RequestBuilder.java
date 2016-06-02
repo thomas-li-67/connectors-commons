@@ -121,10 +121,6 @@ public class RequestBuilder<T> {
     public T execute() {
         final Response response = request.execute(client);
 
-        // Buffer the stream so that we may examine it again later in the case of an error.
-        response.bufferEntity();
-        logger.debug("Response buffered.");
-
         logger.debug("Parsing response.");
         return responseHandler.handleResponse(response, responseType);
     }
