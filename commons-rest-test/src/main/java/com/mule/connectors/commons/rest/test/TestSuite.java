@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class TestSuite implements Runnable {
 
-    public static final Logger logger = LoggerFactory.getLogger(TestSuite.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestSuite.class);
 
     @Override
     public void run() {

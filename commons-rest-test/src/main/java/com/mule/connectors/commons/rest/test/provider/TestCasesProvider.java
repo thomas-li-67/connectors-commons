@@ -3,6 +3,7 @@ package com.mule.connectors.commons.rest.test.provider;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Optional;
 import com.mule.connectors.commons.rest.test.TestCase;
 import com.mule.connectors.commons.rest.test.config.TestCasesConfig;
 import com.mule.connectors.commons.rest.test.exception.InvalidTestCaseFormatException;
@@ -41,14 +42,14 @@ public class TestCasesProvider {
     private Map<String, TestCase> getCases(File directory) {
         Map<String, TestCase> cases = new HashMap<>();
         List<NoTestCasesException> suppressed = new ArrayList<>();
-        for (File subDirectory : directory.listFiles(new DirectoryFilter())) {
+        for (File subDirectory : Optional.fromNullable(directory.listFiles(new DirectoryFilter())).or(new File[] {})) {
             try {
                 cases.putAll(getCases(subDirectory));
             } catch (NoTestCasesException e) {
                 suppressed.add(e);
             }
         }
-        File[] files = directory.listFiles(new TestCaseFileFilter());
+        File[] files = Optional.fromNullable(directory.listFiles(new TestCaseFileFilter())).or(new File[] {});
         if (files.length == 0 && cases.isEmpty()) {
             NoTestCasesException exception = new NoTestCasesException(directory.getAbsolutePath());
             for (NoTestCasesException suppressedException : suppressed) {
