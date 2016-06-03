@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hamcrest.core.IsEqual;
 
 /**
- * {@link BodyAssertion} that verifies that the body is equal to the expected value.
+ * {@link ResponseBodyAssertion} that verifies that the body is equal to the expected value.
  */
-public class Equals extends BodyAssertion {
+public class Equals extends ResponseBodyAssertion {
 
     @JsonCreator
     public Equals(@JsonProperty(value = "expected", required = true) String expectedValue) {

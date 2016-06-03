@@ -1,6 +1,6 @@
 {
     "request" : {
-        "path" : "http://www.google.com",
+        "path" : "http://www.google.com/a",
         "queryParams" : {
             "q" : "Viva Peron Carajo"
         },
@@ -11,6 +11,10 @@
         {
             "type" : "contains",
             "expected" : "Google"
+        },
+        {
+            "type" : "raml",
+            "file" : "api.raml"
         }
     ]
 }

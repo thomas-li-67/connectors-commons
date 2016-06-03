@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * {@link HeaderAssertion} that verifies that a determined header is present and contains the expected value.
+ * {@link ResponseHeaderAssertion} that verifies that a determined header is present and contains the expected value.
  */
-public class HeaderEquals extends HeaderAssertion {
+public class HeaderEquals extends ResponseHeaderAssertion {
 
     private final String expectedKey;
     private final Matcher<Iterable<? super String>> keyMatcher;

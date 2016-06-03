@@ -69,10 +69,42 @@ public abstract class Request {
         // Executing the request.
         Response response = doExecute(requestBuilder, Optional.fromNullable(entity).or(new Form()), contentType);
         logger.debug("Executed Request with Entity: {}", entity);
+
+        // Buffer the stream so that we may examine it again later in the case of an error.
+        response.bufferEntity();
+        logger.debug("Response buffered.");
         return response;
     }
 
     protected abstract Response doExecute(Invocation.Builder requestBuilder, Object entity, String contentType);
+
+    public String getPath() {
+        return path;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public Map<String, String> getQueryParams() {
+        return queryParams;
+    }
+
+    public Map<String, Object> getPathParams() {
+        return pathParams;
+    }
+
+    public Object getEntity() {
+        return entity;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public String getAccept() {
+        return accept;
+    }
 
     public void setPath(String path) {
         this.path = path;

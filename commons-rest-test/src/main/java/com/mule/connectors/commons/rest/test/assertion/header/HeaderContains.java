@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * {@link HeaderAssertion} that verifies that a determined header is present.
+ * {@link ResponseHeaderAssertion} that verifies that a determined header is present.
  */
-public class HeaderContains extends HeaderAssertion {
+public class HeaderContains extends ResponseHeaderAssertion {
 
     private final Matcher<Iterable<? super String>> matcher;
 
@@ -26,7 +26,8 @@ public class HeaderContains extends HeaderAssertion {
         return matcher.matches(headers.keySet());
     }
 
-    @Override public void describeTo(Description description) {
+    @Override
+    public void describeTo(Description description) {
         matcher.describeTo(description);
     }
 }
