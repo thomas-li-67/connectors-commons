@@ -3,16 +3,20 @@ package com.mule.connectors.commons.rest.test.assertion.raml;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.google.common.base.Optional;
 import com.mule.connectors.commons.rest.builder.request.Request;
+import com.mule.connectors.commons.rest.test.exception.ContentEncodingException;
 import guru.nidi.ramltester.model.RamlRequest;
 import guru.nidi.ramltester.model.Values;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Form;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class RamlRequestAdapter implements RamlRequest {
-
+    private static final Logger logger = LoggerFactory.getLogger(RamlRequestAdapter.class);
     private final Request request;
 
     public RamlRequestAdapter(Request request) {
@@ -51,6 +55,7 @@ public class RamlRequestAdapter implements RamlRequest {
             }
             return result;
         } catch (ClassCastException e) {
+            logger.trace("There is not a form in the request body.", e);
             return new Values();
         }
     }
@@ -67,7 +72,11 @@ public class RamlRequestAdapter implements RamlRequest {
 
     @Override
     public byte[] getContent() {
-        return request.getEntity().toString().getBytes();
+        try {
+            return request.getEntity().toString().getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new ContentEncodingException(e);
+        }
     }
 
     private Values toValues(Map<String, String> params) {

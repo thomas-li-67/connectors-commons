@@ -2,10 +2,12 @@ package com.mule.connectors.commons.rest.test.assertion.raml;
 
 import com.google.common.base.Functions;
 import com.google.common.collect.Lists;
+import com.mule.connectors.commons.rest.test.exception.ContentEncodingException;
 import guru.nidi.ramltester.model.RamlResponse;
 import guru.nidi.ramltester.model.Values;
 
 import javax.ws.rs.core.Response;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,14 +20,19 @@ public class RamlResponseAdapter implements RamlResponse {
     private final String contentType;
 
     public RamlResponseAdapter(Response response) {
-        this.status = response.getStatus();
-        Map<String, String[]> headers = new HashMap<>();
-        for (Map.Entry<String, List<Object>> entry : response.getHeaders().entrySet()) {
-            headers.put(entry.getKey(), Lists.transform(entry.getValue(), Functions.toStringFunction()).toArray(new String[0]));
+        try {
+            this.status = response.getStatus();
+            Map<String, String[]> headers = new HashMap<>();
+            for (Map.Entry<String, List<Object>> entry : response.getHeaders().entrySet()) {
+                headers.put(entry.getKey(), Lists.transform(entry.getValue(), Functions.toStringFunction()).toArray(new String[0]));
+            }
+            this.contentType = response.getMediaType().getType();
+            values = new Values(headers);
+            content = response.readEntity(String.class).getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new ContentEncodingException(e);
         }
-        this.contentType = response.getMediaType().getType();
-        values = new Values(headers);
-        content = response.readEntity(String.class).getBytes();
+
     }
 
     @Override
