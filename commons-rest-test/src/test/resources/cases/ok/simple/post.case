@@ -8,5 +8,15 @@
         "method" : "POST"
     },
     "assertions" : [
+            {
+                "type" : "raml",
+                "file" : "api.raml",
+                "validations" : ["PARAMETER", "EMPTY"]
+            },
+            {
+                "type" : "raml",
+                "file" : "api.raml",
+                "validations" : []
+            }
     ]
 }

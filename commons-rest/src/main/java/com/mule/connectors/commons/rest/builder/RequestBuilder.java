@@ -16,8 +16,8 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -82,11 +82,8 @@ public class RequestBuilder<T> {
     }
 
     public RequestBuilder<T> basicAuthorization(String username, String password) {
-        try {
-            return header("Authorization", String.format("Basic %s", DatatypeConverter.printBase64Binary(String.format("%s:%s", username, password).getBytes("UTF-8"))));
-        } catch (UnsupportedEncodingException e) {
-            throw new BasicAuthorizationEncodingException(e);
-        }
+        return header("Authorization",
+                String.format("Basic %s", DatatypeConverter.printBase64Binary(String.format("%s:%s", username, password).getBytes(Charset.forName("UTF-8")))));
     }
 
     public RequestBuilder<T> queryParam(String key, Object value) {

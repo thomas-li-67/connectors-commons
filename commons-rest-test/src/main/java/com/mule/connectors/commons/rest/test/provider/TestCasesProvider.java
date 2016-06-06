@@ -1,19 +1,16 @@
 package com.mule.connectors.commons.rest.test.provider;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import com.mule.connectors.commons.rest.test.TestCase;
 import com.mule.connectors.commons.rest.test.config.TestCasesConfig;
-import com.mule.connectors.commons.rest.test.exception.InvalidTestCaseFormatException;
 import com.mule.connectors.commons.rest.test.exception.NoTestCasesException;
 import com.mule.connectors.commons.rest.test.exception.TestCasesDirectoryNotFoundException;
-import com.mule.connectors.commons.rest.test.exception.UnexpectedParsingException;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +21,7 @@ import java.util.Map;
 public class TestCasesProvider {
 
     private final TestCasesConfig config;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final FileTransformationStrategy transformationStrategy = new FileTransformationStrategy();
 
     public TestCasesProvider(TestCasesConfig config) {
         this.config = config;
@@ -41,31 +38,26 @@ public class TestCasesProvider {
 
     private Map<String, TestCase> getCases(File directory) {
         Map<String, TestCase> cases = new HashMap<>();
-        List<NoTestCasesException> suppressed = new ArrayList<>();
-        for (File subDirectory : Optional.fromNullable(directory.listFiles(new DirectoryFilter())).or(new File[] {})) {
-            try {
-                cases.putAll(getCases(subDirectory));
-            } catch (NoTestCasesException e) {
-                suppressed.add(e);
-            }
+        List<File> testCaseFiles = getCaseFiles(directory);
+        if (testCaseFiles.isEmpty()) {
+            throw new NoTestCasesException(directory);
         }
-        File[] files = Optional.fromNullable(directory.listFiles(new TestCaseFileFilter())).or(new File[] {});
-        if (files.length == 0 && cases.isEmpty()) {
-            NoTestCasesException exception = new NoTestCasesException(directory.getAbsolutePath());
-            for (NoTestCasesException suppressedException : suppressed) {
-                exception.addSuppressed(suppressedException);
-            }
-            throw exception;
-        }
-        for (File testCaseFile : files) {
-            try {
-                cases.put(testCaseFile.getAbsolutePath(), objectMapper.readValue(testCaseFile, TestCase.class));
-            } catch (JsonParseException | JsonMappingException e) {
-                throw new InvalidTestCaseFormatException(testCaseFile, e);
-            } catch (IOException e) {
-                throw new UnexpectedParsingException(testCaseFile, e);
-            }
+        for (Map.Entry<String, TestCase> entries : Lists.transform(testCaseFiles, transformationStrategy)) {
+            cases.put(entries.getKey(), entries.getValue());
         }
         return cases;
+    }
+
+    private List<File> getCaseFiles(File directory) {
+        List<File> files = new ArrayList<>();
+        for (File subDirectory : filter(directory, new DirectoryFilter())) {
+            files.addAll(getCaseFiles(subDirectory));
+        }
+        files.addAll(Arrays.asList(filter(directory, new TestCaseFileFilter())));
+        return files;
+    }
+
+    private File[] filter(File directory, FileFilter filter) {
+        return Optional.fromNullable(directory.listFiles(filter)).or(new File[] {});
     }
 }

@@ -1,6 +1,7 @@
 package com.mule.connectors.commons.rest.test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,6 +20,6 @@ public class TestCaseResult {
     }
 
     public List<String> getErrorMessages() {
-        return errorMessages;
+        return Collections.unmodifiableList(errorMessages);
     }
 }
