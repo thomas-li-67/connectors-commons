@@ -32,5 +32,6 @@ public class RamlResponseAdapterTest {
         assertThat(ramlResponseAdapter.getContentType(), equalTo(MediaType.APPLICATION_JSON));
         assertThat(ramlResponseAdapter.getStatus(), equalTo(Response.Status.OK.getStatusCode()));
         assertThat(ramlResponseAdapter.getContent().length, is(7));
+        verify(response);
     }
 }

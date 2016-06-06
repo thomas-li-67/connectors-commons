@@ -16,6 +16,7 @@ import java.util.TreeMap;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
@@ -40,6 +41,7 @@ public class RamlRequestAdapterTest {
         expect(request.getPathParams()).andReturn(pathParams);
         replay(request);
         assertThat(ramlRequestAdapter.getRequestUrl(path, false), equalTo("this is a path variable "));
+        verify(request);
     }
 
     @Test
@@ -60,6 +62,7 @@ public class RamlRequestAdapterTest {
         expect(request.getContentType()).andReturn(contentType);
         replay(request);
         assertThat(ramlRequestAdapter.getContentType(), equalTo(contentType));
+        verify(request);
     }
 
     @Test
@@ -70,6 +73,7 @@ public class RamlRequestAdapterTest {
         replay(request);
         Values values = ramlRequestAdapter.getFormValues();
         assertThat(values.get("test"), CoreMatchers.<List<Object>>equalTo(Lists.<Object>newArrayList("test")));
+        verify(request);
     }
 
     @Test
@@ -78,5 +82,6 @@ public class RamlRequestAdapterTest {
         replay(request);
         Values values = ramlRequestAdapter.getFormValues();
         assertThat(values.asMap().size(), is(0));
+        verify(request);
     }
 }

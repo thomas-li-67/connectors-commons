@@ -57,7 +57,7 @@ public class RequestTest {
      * This test is made so that all the getter methods on Request are used. These methods are for external use and as such this is the only way to test them.
      */
     @Test
-    public void testEnsureCoverage() {
+    public void testGettersAndSetters() {
         String accept = "Accept";
         request.setAccept(accept);
         assertThat(request.getAccept(), is(accept));
