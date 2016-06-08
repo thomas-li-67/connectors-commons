@@ -1,18 +1,14 @@
 package com.mule.connectors.commons.rest.test.assertion.status;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.mock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-
-import javax.ws.rs.core.Response;
-
+import com.mule.connectors.commons.rest.test.assertion.RequestAndResponse;
+import com.mule.connectors.commons.rest.test.exception.StatusCodeDefinitionException;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.mule.connectors.commons.rest.test.assertion.RequestAndResponse;
-import com.mule.connectors.commons.rest.test.exception.StatusCodeDefinitionException;
+import javax.ws.rs.core.Response;
+
+import static org.easymock.EasyMock.*;
 
 public class StatusTest {
 
@@ -41,14 +37,13 @@ public class StatusTest {
         match(200, "2xxx");
     }
 
-    public boolean match(int responseStatus, String family) {
-        Status status = new Status(family);
+    public boolean match(int responseStatus, String expectedStatus) {
         Response resp = mock(Response.class);
         expect(resp.getStatus()).andReturn(responseStatus);
         RequestAndResponse reqAndResp = mock(RequestAndResponse.class);
         expect(reqAndResp.getResponse()).andReturn(resp);
         replay(resp, reqAndResp);
-        boolean matches = status.matches(reqAndResp);
+        boolean matches = new Status(expectedStatus).matches(reqAndResp);
         verify(resp, reqAndResp);
         return matches;
     }
