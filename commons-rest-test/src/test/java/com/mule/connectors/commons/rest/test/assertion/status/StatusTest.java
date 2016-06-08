@@ -37,7 +37,7 @@ public class StatusTest {
         match(200, "2xxx");
     }
 
-    public boolean match(int responseStatus, String expectedStatus) {
+    private boolean match(int responseStatus, String expectedStatus) {
         Response resp = mock(Response.class);
         expect(resp.getStatus()).andReturn(responseStatus);
         RequestAndResponse reqAndResp = mock(RequestAndResponse.class);
