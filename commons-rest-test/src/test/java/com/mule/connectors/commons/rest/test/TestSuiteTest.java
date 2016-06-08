@@ -1,6 +1,5 @@
-package com.mule.connectors.commons.rest.test.provider;
+package com.mule.connectors.commons.rest.test;
 
-import com.mule.connectors.commons.rest.test.TestSuite;
 import org.junit.Test;
 
 public class TestSuiteTest {

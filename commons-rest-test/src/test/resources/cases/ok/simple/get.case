@@ -13,6 +13,10 @@
             "expected" : "Google"
         },
         {
+            "type" : "statusCodeEquals",
+            "expectedValue" : "200"
+        },
+        {
             "type" : "raml",
             "file" : "api.raml"
         }

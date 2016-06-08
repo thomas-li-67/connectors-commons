@@ -1,18 +1,19 @@
 package com.mule.connectors.commons.rest.test.assertion.body;
 
-import com.mule.connectors.commons.rest.test.assertion.RequestAndResponse;
-import com.mule.connectors.commons.rest.test.assertion.RequestAndResponseAssertion;
+import javax.ws.rs.core.Response;
+
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
-import javax.ws.rs.core.Response;
+import com.mule.connectors.commons.rest.test.assertion.RequestAndResponse;
+import com.mule.connectors.commons.rest.test.assertion.RequestAndResponseAssertion;
 
 /**
  * {@link Matcher} that applies a determined String Matcher to the body of a {@link Response}.
  */
 public class ResponseBodyAssertion extends BaseMatcher<RequestAndResponse> implements RequestAndResponseAssertion {
-    private Matcher<String> matcher;
+    protected Matcher<String> matcher;
 
     public ResponseBodyAssertion(Matcher<String> matcher) {
         this.matcher = matcher;
@@ -33,7 +34,7 @@ public class ResponseBodyAssertion extends BaseMatcher<RequestAndResponse> imple
         super.describeMismatch(getResponse(item), description);
     }
 
-    private Response getResponse(Object item) {
+    protected Response getResponse(Object item) {
         return RequestAndResponse.class.cast(item).getResponse();
     }
 }
