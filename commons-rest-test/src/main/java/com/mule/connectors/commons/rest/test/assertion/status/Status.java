@@ -2,6 +2,8 @@ package com.mule.connectors.commons.rest.test.assertion.status;
 
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
+import java.util.regex.Pattern;
+
 import javax.ws.rs.core.Response;
 
 import org.hamcrest.BaseMatcher;
@@ -13,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mule.connectors.commons.rest.test.assertion.RequestAndResponse;
 import com.mule.connectors.commons.rest.test.assertion.RequestAndResponseAssertion;
+import com.mule.connectors.commons.rest.test.exception.StatusCodeDefinitionException;
 
 /**
  * {@link Matcher} that validates that the status code of a {@link Response} is the expected value, which can either be a status code (three digit integer) or a family (2xx or 4xx
@@ -21,7 +24,7 @@ import com.mule.connectors.commons.rest.test.assertion.RequestAndResponseAsserti
 public class Status extends BaseMatcher<RequestAndResponse> implements RequestAndResponseAssertion {
 
     private Matcher<String> matcher;
-    private static String FAMILY_SUFFIX = "xx";
+    private static Pattern FAMILY_PATTERN = Pattern.compile("\\d{1}(x){2}");
 
     @JsonCreator
     public Status(@JsonProperty(value = "expectedValue", required = true) String expectedValue) {
@@ -29,11 +32,13 @@ public class Status extends BaseMatcher<RequestAndResponse> implements RequestAn
             matcher = CoreMatchers.is(expectedValue);
         } else if (isFamily(expectedValue)) {
             matcher = CoreMatchers.startsWith(expectedValue.substring(0, 1));
+        } else {
+            throw new StatusCodeDefinitionException(expectedValue);
         }
     }
 
     private boolean isFamily(String expectedValue) {
-        return expectedValue.length() == 3 && isNumeric(expectedValue.substring(0, 1)) && FAMILY_SUFFIX.equalsIgnoreCase(expectedValue.substring(1, 3));
+        return FAMILY_PATTERN.matcher(expectedValue).matches();
     }
 
     @Override
@@ -47,7 +52,6 @@ public class Status extends BaseMatcher<RequestAndResponse> implements RequestAn
     }
 
     private Response getResponse(Object item) {
-        return RequestAndResponse.class.cast(item)
-                .getResponse();
+        return RequestAndResponse.class.cast(item).getResponse();
     }
 }
