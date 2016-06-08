@@ -13,7 +13,7 @@
             "expected" : "Google"
         },
         {
-            "type" : "statusCodeEquals",
+            "type" : "status",
             "expectedValue" : "200"
         },
         {

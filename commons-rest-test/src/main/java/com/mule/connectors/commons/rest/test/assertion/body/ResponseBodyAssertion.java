@@ -13,7 +13,7 @@ import com.mule.connectors.commons.rest.test.assertion.RequestAndResponseAsserti
  * {@link Matcher} that applies a determined String Matcher to the body of a {@link Response}.
  */
 public class ResponseBodyAssertion extends BaseMatcher<RequestAndResponse> implements RequestAndResponseAssertion {
-    protected Matcher<String> matcher;
+    private Matcher<String> matcher;
 
     public ResponseBodyAssertion(Matcher<String> matcher) {
         this.matcher = matcher;
@@ -34,7 +34,7 @@ public class ResponseBodyAssertion extends BaseMatcher<RequestAndResponse> imple
         super.describeMismatch(getResponse(item), description);
     }
 
-    protected Response getResponse(Object item) {
+    private Response getResponse(Object item) {
         return RequestAndResponse.class.cast(item).getResponse();
     }
 }

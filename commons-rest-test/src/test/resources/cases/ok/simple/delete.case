@@ -26,6 +26,10 @@
             "type" : "headerEquals",
              "expectedKey" : "Content-Type",
              "expectedValue" : "text/html; charset=UTF-8"
+        },
+        {
+            "type" : "status",
+            "expectedValue" : "4xx"
         }
     ]
 }
