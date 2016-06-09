@@ -1,16 +1,23 @@
 package com.mule.connectors.commons.rest.test;
 
-import com.mule.connectors.commons.rest.test.config.TestCasesConfig;
-import com.mule.connectors.commons.rest.test.provider.TestCasesProvider;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.common.collect.Lists;
+import com.mule.connectors.commons.rest.test.config.TestCasesConfig;
+import com.mule.connectors.commons.rest.test.provider.TestCasesProvider;
 
 /**
  * {@link Runnable} implementation and entry point to the API.<br>
@@ -41,15 +48,19 @@ public class TestSuite implements Runnable {
         }
 
         // Present results.
+        List<String> errorMessages = Lists.newArrayList();
         for (Map.Entry<String, TestCaseResult> entry : results.entrySet()) {
             if (entry.getValue().isSuccessful()) {
                 logger.info(String.format("%s: OK", entry.getKey()));
             } else {
                 logger.error(String.format("%s: FAILED", entry.getKey()));
                 for (String errorMessage : entry.getValue().getErrorMessages()) {
+                    errorMessages.add(errorMessage);
                     logger.error(String.format("    %s", errorMessage));
                 }
             }
         }
+
+        assertThat("There are errors in RAML validations. Please check the log for details.", errorMessages.isEmpty(), is(true));
     }
 }

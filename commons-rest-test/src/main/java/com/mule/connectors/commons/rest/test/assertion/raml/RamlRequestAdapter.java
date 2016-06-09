@@ -1,18 +1,21 @@
 package com.mule.connectors.commons.rest.test.assertion.raml;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.google.common.base.Optional;
-import com.mule.connectors.commons.rest.builder.request.Request;
 import guru.nidi.ramltester.model.RamlRequest;
 import guru.nidi.ramltester.model.Values;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.Form;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.ws.rs.core.Form;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.google.common.base.Optional;
+import com.mule.connectors.commons.rest.builder.request.Request;
 
 public class RamlRequestAdapter implements RamlRequest {
 
@@ -73,7 +76,7 @@ public class RamlRequestAdapter implements RamlRequest {
 
     @Override
     public byte[] getContent() {
-        return request.getEntity().toString().getBytes(Charset.forName("UTF-8"));
+        return request.getEntity() != null ? request.getEntity().toString().getBytes(Charset.forName("UTF-8")) : null;
     }
 
     private Values toValues(Map<String, String> params) {
