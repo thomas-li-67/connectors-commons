@@ -1,17 +1,21 @@
 package com.mule.connectors.commons.rest.test.assertion.raml;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Test;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.mock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
-import static org.easymock.EasyMock.*;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import org.hamcrest.CoreMatchers;
+import org.junit.Test;
 
 public class RamlResponseAdapterTest {
 
@@ -23,7 +27,7 @@ public class RamlResponseAdapterTest {
         headers.putSingle("key", "value");
         expect(response.getHeaders()).andReturn(headers);
         expect(response.getMediaType()).andReturn(MediaType.APPLICATION_JSON_TYPE);
-        expect(response.readEntity(eq(String.class))).andReturn("");
+        expect(response.readEntity(eq(String.class))).andReturn("{\"a\":1}");
         replay(response);
         RamlResponseAdapter ramlResponseAdapter = new RamlResponseAdapter(response);
         assertThat(ramlResponseAdapter.getHeaderValues().size(), equalTo(1));
