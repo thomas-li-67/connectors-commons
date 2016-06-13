@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.google.common.base.Functions;
 import com.google.common.base.Optional;
 import com.mule.connectors.commons.rest.builder.request.Request;
 
@@ -76,7 +77,7 @@ public class RamlRequestAdapter implements RamlRequest {
 
     @Override
     public byte[] getContent() {
-        return request.getEntity() != null ? request.getEntity().toString().getBytes(Charset.forName("UTF-8")) : null;
+        return Optional.fromNullable(request.getEntity()).transform(Functions.toStringFunction()).or("").getBytes(Charset.forName("UTF-8"));
     }
 
     private Values toValues(Map<String, String> params) {
