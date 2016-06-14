@@ -28,9 +28,9 @@ public class TestCase {
     public TestCase(@JsonProperty(value = "request", required = true) Request request,
             @JsonProperty(value = "assertions", required = true) List<RequestAndResponseAssertion> responseAssertionsParam) {
         this.request = request;
-        List<Matcher<? super RequestAndResponse>> responseAssertions = new ArrayList<>();
-        responseAssertions.addAll(Optional.fromNullable(responseAssertionsParam).or(new ArrayList<RequestAndResponseAssertion>()));
-        this.responseAssertions = responseAssertions;
+        List<Matcher<? super RequestAndResponse>> assertions = new ArrayList<>();
+        assertions.addAll(Optional.fromNullable(responseAssertionsParam).or(new ArrayList<RequestAndResponseAssertion>()));
+        this.responseAssertions = assertions;
     }
 
     public void execute(Client client) {

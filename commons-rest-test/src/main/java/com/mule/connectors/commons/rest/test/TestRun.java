@@ -6,19 +6,21 @@ import com.mule.connectors.commons.rest.test.provider.TestCasesProvider;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Client;
 import java.util.Collection;
 
 @RunWith(Parameterized.class)
 public class TestRun implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(TestRun.class);
 
     private final TestCase testCase;
     private final Client client;
-    private final String path;
 
     public TestRun(String path, TestCase testCase, Client client) {
-        this.path = path;
+        logger.info("Running test on '{}'.", path);
         this.testCase = testCase;
         this.client = client;
     }
