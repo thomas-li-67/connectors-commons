@@ -1,0 +1,22 @@
+{
+    "request" : {
+        "path" : "http://www.google.com/",
+        "headers" : {
+            "test" : "test",
+            "test2" : "test2"
+        },
+        "method" : "POST"
+    },
+    "assertions" : [
+            {
+                "type" : "raml",
+                "file" : "api.raml",
+                "validations" : ["PARAMETER", "EMPTY"]
+            },
+            {
+                "type" : "raml",
+                "file" : "api.raml",
+                "validations" : []
+            }
+    ]
+}

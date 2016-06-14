@@ -3,6 +3,7 @@ package com.mule.connectors.commons.rest.test.assertion.raml;
 import guru.nidi.ramltester.model.RamlResponse;
 import guru.nidi.ramltester.model.Values;
 
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,6 @@ public class RamlResponseAdapter implements RamlResponse {
 
     @Override
     public byte[] getContent() {
-        return content.getBytes();
+        return content.getBytes(Charset.forName("UTF-8"));
     }
 }

@@ -78,7 +78,7 @@ public class ValidRamlTest {
         Description description = mock(Description.class);
         expect(description.appendText(eq("found the following errors:"))).andReturn(description);
         expect(description.appendText(eq("\n\t\t"))).andReturn(description).times(1);
-        expect(description.appendText(eq("Response(301) is not defined on action(GET /a)"))).andReturn(description);
+        expect(description.appendText(eq("Response(301) is not defined on action(GET /a) mime-type('application/xml')"))).andReturn(description);
         replay(description);
         validRaml.describeMismatch(requestAndResponse, description);
         verify(description);

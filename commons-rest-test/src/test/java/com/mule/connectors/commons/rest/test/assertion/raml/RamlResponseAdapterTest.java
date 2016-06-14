@@ -23,7 +23,7 @@ public class RamlResponseAdapterTest {
         headers.putSingle("key", "value");
         expect(response.getHeaders()).andReturn(headers);
         expect(response.getMediaType()).andReturn(MediaType.APPLICATION_JSON_TYPE);
-        expect(response.readEntity(eq(String.class))).andReturn("");
+        expect(response.readEntity(eq(String.class))).andReturn("{\"a\":1}");
         replay(response);
         RamlResponseAdapter ramlResponseAdapter = new RamlResponseAdapter(response);
         assertThat(ramlResponseAdapter.getHeaderValues().size(), equalTo(1));
@@ -31,7 +31,7 @@ public class RamlResponseAdapterTest {
         assertThat(ramlResponseAdapter.getHeaderValues().get("key").get(0), CoreMatchers.<Object>equalTo("value"));
         assertThat(ramlResponseAdapter.getContentType(), equalTo(MediaType.APPLICATION_JSON));
         assertThat(ramlResponseAdapter.getStatus(), equalTo(Response.Status.OK.getStatusCode()));
-        assertThat(ramlResponseAdapter.getContent().length, is(0));
+        assertThat(ramlResponseAdapter.getContent().length, is(7));
         verify(response);
     }
 }
