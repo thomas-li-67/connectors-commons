@@ -3,6 +3,7 @@ package com.mule.connectors.commons.rest.test;
 import com.mule.connectors.commons.rest.test.config.TestCasesConfig;
 import com.mule.connectors.commons.rest.test.provider.TestCase;
 import com.mule.connectors.commons.rest.test.provider.TestCasesProvider;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -26,8 +27,8 @@ public class TestRun implements Runnable {
     }
 
     @Parameterized.Parameters(name = "Test case for \"{0}\"")
-    public static Collection<Object[]> getCases() {
-        return new TestCasesProvider(new TestCasesConfig("/cases-config.properties")).getCases();
+    public static Collection<Object[]> getCases() throws ConfigurationException {
+        return new TestCasesProvider(new TestCasesConfig("src/test/resources/cases-config.properties")).getCases();
     }
 
     @Test
