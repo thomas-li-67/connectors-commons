@@ -39,7 +39,7 @@ public class ValidRaml extends BaseMatcher<RequestAndResponse> implements Reques
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("No errors on the RAML file.");
+        description.appendText("RAML validation");
     }
 
     @Override

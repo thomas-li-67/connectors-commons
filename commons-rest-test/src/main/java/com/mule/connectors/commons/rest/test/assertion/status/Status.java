@@ -19,14 +19,16 @@ import java.util.regex.Pattern;
  */
 public class Status extends BaseMatcher<RequestAndResponse> implements RequestAndResponseAssertion {
 
-    private Matcher<String> matcher;
     private static Pattern PATTERN = Pattern.compile("\\d[\\dxX]{2}");
+    private final String expectedValue;
+    private final Matcher<String> matcher;
 
     @JsonCreator
     public Status(@JsonProperty(value = "expectedValue", required = true) String expectedValue) {
         if (!PATTERN.matcher(expectedValue).matches()) {
             throw new StatusCodeDefinitionException(expectedValue);
         }
+        this.expectedValue = expectedValue;
         matcher = CoreMatchers.startsWith(expectedValue.toLowerCase().replace("x", ""));
     }
 
@@ -37,12 +39,12 @@ public class Status extends BaseMatcher<RequestAndResponse> implements RequestAn
 
     @Override
     public void describeTo(Description description) {
-        matcher.describeTo(description);
+        description.appendText("Response status matching ").appendValue(expectedValue);
     }
 
     @Override
     public void describeMismatch(Object item, Description description) {
-        super.describeMismatch(getResponse(item), description);
+        super.describeMismatch(getResponse(item).getStatus(), description);
     }
 
     private Response getResponse(Object item) {

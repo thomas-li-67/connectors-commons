@@ -68,11 +68,11 @@ public class RamlRequestAdapterTest {
     @Test
     public void getFormValuesTest() {
         Form form = new Form();
-        form.param("test", "test");
+        form.param("matchTest", "matchTest");
         expect(request.getEntity()).andReturn(form);
         replay(request);
         Values values = ramlRequestAdapter.getFormValues();
-        assertThat(values.get("test"), CoreMatchers.<List<Object>>equalTo(Lists.<Object>newArrayList("test")));
+        assertThat(values.get("matchTest"), CoreMatchers.<List<Object>>equalTo(Lists.<Object>newArrayList("matchTest")));
         verify(request);
     }
 
@@ -83,5 +83,19 @@ public class RamlRequestAdapterTest {
         Values values = ramlRequestAdapter.getFormValues();
         assertThat(values.asMap().size(), is(0));
         verify(request);
+    }
+
+    @Test
+    public void addHeaderTest() {
+        Request request = new GetRequest();
+        request.addHeader("key", "value");
+        ramlRequestAdapter = new RamlRequestAdapter(request);
+        Map<String, List<Object>> headers = ramlRequestAdapter.getHeaderValues().asMap();
+        for (Map.Entry<String, List<Object>> entry : headers.entrySet()) {
+            assertThat(entry.getKey(), is("key"));
+            assertThat(entry.getValue().get(0).toString(), is("value"));
+            assertThat(entry.getValue().size(), is(1));
+        }
+        assertThat(headers.size(), is(1));
     }
 }

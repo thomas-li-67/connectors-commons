@@ -9,12 +9,12 @@
     },
     "assertions" : [
         {
-            "type" : "contains",
+            "type" : "body",
             "expected" : "Google"
         },
         {
             "type" : "status",
-            "expectedValue" : "200"
+            "expectedValue" : "4xx"
         },
         {
             "type" : "raml",

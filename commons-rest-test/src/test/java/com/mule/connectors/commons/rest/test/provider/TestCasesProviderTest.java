@@ -2,49 +2,45 @@ package com.mule.connectors.commons.rest.test.provider;
 
 import com.mule.connectors.commons.rest.test.config.TestCasesConfig;
 import com.mule.connectors.commons.rest.test.exception.InvalidTestCaseFormatException;
-import com.mule.connectors.commons.rest.test.exception.NoTestCasesException;
 import com.mule.connectors.commons.rest.test.exception.TestCasesDirectoryNotFoundException;
 import com.mule.connectors.commons.rest.test.exception.UnexpectedParsingException;
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.List;
 
+import static com.google.common.base.Predicates.alwaysTrue;
+import static com.google.common.collect.Iterables.all;
 import static org.easymock.EasyMock.*;
 
 public class TestCasesProviderTest {
 
+    private TestCasesConfig config;
+
+    @Before
+    public void setup() {
+        config = mock(TestCasesConfig.class);
+    }
+
     @Test(expected = TestCasesDirectoryNotFoundException.class)
     public void getInexistingTestCasesFolderTest() {
-        TestCasesConfig config = mock(TestCasesConfig.class);
-        expect(config.getTestCasesDirectory()).andReturn(new File("inexistent"));
-        replay(config);
-        new TestCasesProvider(config).getCases();
+        getCases("inexistent");
     }
 
     @Test(expected = TestCasesDirectoryNotFoundException.class)
     public void getNonDirectoryTestCasesFolderTest() {
-        TestCasesConfig config = mock(TestCasesConfig.class);
-        expect(config.getTestCasesDirectory()).andReturn(new File("src/test/resources/cases/non_directory"));
-        replay(config);
-        new TestCasesProvider(config).getCases();
+        getCases("src/test/resources/cases/non_directory");
     }
 
-    @Test(expected = NoTestCasesException.class)
+    @Test
     public void getEmptyTestCasesFolderTest() {
-        TestCasesConfig config = mock(TestCasesConfig.class);
-        expect(config.getTestCasesDirectory()).andReturn(new File("src/test/resources/cases/empty"));
-        replay(config);
-        new TestCasesProvider(config).getCases();
+        getCases("src/test/resources/cases/empty");
     }
-
 
     @Test(expected = InvalidTestCaseFormatException.class)
     public void getInvalidParsingTest() {
-        TestCasesConfig config = mock(TestCasesConfig.class);
-        expect(config.getTestCasesDirectory()).andReturn(new File("src/test/resources/cases/invalid_parsing"));
-        replay(config);
-        new TestCasesProvider(config).getCases();
+        getCases("src/test/resources/cases/invalid_parsing");
     }
 
     @Test(expected = UnexpectedParsingException.class)
@@ -53,10 +49,7 @@ public class TestCasesProviderTest {
         File file = new File(casesDirectory, "test.case");
         file.setReadable(false);
         try {
-            TestCasesConfig config = mock(TestCasesConfig.class);
-            expect(config.getTestCasesDirectory()).andReturn(casesDirectory);
-            replay(config);
-            new TestCasesProvider(config).getCases();
+            getCases(casesDirectory.getAbsolutePath());
         } finally {
             file.setReadable(true);
         }
@@ -64,10 +57,14 @@ public class TestCasesProviderTest {
 
     @Test
     public void getCasesTest() {
-        TestCasesConfig config = mock(TestCasesConfig.class);
-        expect(config.getTestCasesDirectory()).andReturn(new File("src/test/resources/cases/ok"));
+        getCases("src/test/resources/cases/ok");
+    }
+
+    private void getCases(String path) {
+        expect(config.getTestCasesDirectory()).andReturn(new File(path)).times(2);
         replay(config);
-        Assert.assertEquals(4, new TestCasesProvider(config).getCases().size());
+        List<Object[]> cases = new TestCasesProvider(config).getCases();
         verify(config);
+        all(cases, alwaysTrue());
     }
 }

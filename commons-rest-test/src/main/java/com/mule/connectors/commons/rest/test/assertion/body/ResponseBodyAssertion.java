@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 /**
  * {@link Matcher} that applies a determined String Matcher to the body of a {@link Response}.
  */
-public class ResponseBodyAssertion extends BaseMatcher<RequestAndResponse> implements RequestAndResponseAssertion {
+public abstract class ResponseBodyAssertion extends BaseMatcher<RequestAndResponse> implements RequestAndResponseAssertion {
     private Matcher<String> matcher;
 
     public ResponseBodyAssertion(Matcher<String> matcher) {
@@ -24,13 +24,8 @@ public class ResponseBodyAssertion extends BaseMatcher<RequestAndResponse> imple
     }
 
     @Override
-    public void describeTo(Description description) {
-        matcher.describeTo(description);
-    }
-
-    @Override
     public void describeMismatch(Object item, Description description) {
-        super.describeMismatch(getResponse(item), description);
+        super.describeMismatch(getResponse(item).readEntity(String.class), description);
     }
 
     private Response getResponse(Object item) {

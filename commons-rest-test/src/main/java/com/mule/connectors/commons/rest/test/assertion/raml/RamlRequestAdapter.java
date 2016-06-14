@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.base.Functions.toStringFunction;
+
 public class RamlRequestAdapter implements RamlRequest {
 
     private static final Logger logger = LoggerFactory.getLogger(RamlRequestAdapter.class);
@@ -73,7 +75,7 @@ public class RamlRequestAdapter implements RamlRequest {
 
     @Override
     public byte[] getContent() {
-        return request.getEntity().toString().getBytes(Charset.forName("UTF-8"));
+        return Optional.fromNullable(request.getEntity()).transform(toStringFunction()).or("").getBytes(Charset.forName("UTF-8"));
     }
 
     private Values toValues(Map<String, String> params) {
