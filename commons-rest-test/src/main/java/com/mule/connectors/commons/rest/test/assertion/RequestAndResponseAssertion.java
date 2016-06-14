@@ -19,7 +19,7 @@ import com.mule.connectors.commons.rest.test.assertion.status.Status;
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = Contains.class, name = "contains"),
+        @JsonSubTypes.Type(value = Contains.class, name = "body"),
         @JsonSubTypes.Type(value = Equals.class, name = "equals"),
         @JsonSubTypes.Type(value = HeaderContains.class, name = "hasHeader"),
         @JsonSubTypes.Type(value = HeaderEquals.class, name = "headerEquals"),

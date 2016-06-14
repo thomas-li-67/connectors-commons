@@ -15,10 +15,12 @@ import java.util.Map;
 public class HeaderContains extends ResponseHeaderAssertion {
 
     private final Matcher<Iterable<? super String>> matcher;
+    private final String expectedValue;
 
     @JsonCreator
     public HeaderContains(@JsonProperty(value = "expected", required = true) String expectedValue) {
         this.matcher = CoreMatchers.hasItem(expectedValue);
+        this.expectedValue = expectedValue;
     }
 
     @Override
@@ -28,6 +30,11 @@ public class HeaderContains extends ResponseHeaderAssertion {
 
     @Override
     public void describeTo(Description description) {
-        matcher.describeTo(description);
+        description.appendText("Existing header ").appendValue(expectedValue);
+    }
+
+    @Override
+    public void describeMismatch(Object item, Description description) {
+        description.appendText(" not found.");
     }
 }

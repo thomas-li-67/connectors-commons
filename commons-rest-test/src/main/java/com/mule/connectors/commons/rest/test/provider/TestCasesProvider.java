@@ -2,18 +2,17 @@ package com.mule.connectors.commons.rest.test.provider;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import com.mule.connectors.commons.rest.test.TestCase;
 import com.mule.connectors.commons.rest.test.config.TestCasesConfig;
-import com.mule.connectors.commons.rest.test.exception.NoTestCasesException;
 import com.mule.connectors.commons.rest.test.exception.TestCasesDirectoryNotFoundException;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.filter.LoggingFilter;
 
+import javax.ws.rs.client.ClientBuilder;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Class in charge of loading the {@link TestCase}s from the directory defined on the {@link TestCasesConfig}.
@@ -21,31 +20,23 @@ import java.util.Map;
 public class TestCasesProvider {
 
     private final TestCasesConfig config;
-    private final FileTransformationStrategy transformationStrategy = new FileTransformationStrategy();
+    private final FileToCaseTransformer transformationStrategy;
 
     public TestCasesProvider(TestCasesConfig config) {
         this.config = config;
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.register(new LoggingFilter(java.util.logging.Logger.getLogger(getClass().getSimpleName()), true));
+        transformationStrategy = new FileToCaseTransformer(config.getTestCasesDirectory(), ClientBuilder.newClient(clientConfig));
+
     }
 
-    public Map<String, TestCase> getCases() {
+    public List<Object[]> getCases() {
         File testCasesDirectory = config.getTestCasesDirectory();
         if (testCasesDirectory.exists() && testCasesDirectory.isDirectory()) {
-            return getCases(testCasesDirectory);
+            return Lists.transform(getCaseFiles(testCasesDirectory), transformationStrategy);
         } else {
             throw new TestCasesDirectoryNotFoundException(testCasesDirectory.getAbsolutePath());
         }
-    }
-
-    private Map<String, TestCase> getCases(File directory) {
-        Map<String, TestCase> cases = new HashMap<>();
-        List<File> testCaseFiles = getCaseFiles(directory);
-        if (testCaseFiles.isEmpty()) {
-            throw new NoTestCasesException(directory);
-        }
-        for (Map.Entry<String, TestCase> entries : Lists.transform(testCaseFiles, transformationStrategy)) {
-            cases.put(entries.getKey(), entries.getValue());
-        }
-        return cases;
     }
 
     private List<File> getCaseFiles(File directory) {

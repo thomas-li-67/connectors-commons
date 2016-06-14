@@ -1,6 +1,6 @@
 {
     "request" : {
-        "path" : "http://www.google.com/a",
+        "path" : "http://www.google.com/",
         "queryParams" : {
             "q" : "Viva Peron Carajo"
         },
@@ -9,16 +9,12 @@
     },
     "assertions" : [
         {
-            "type" : "contains",
+            "type" : "body",
             "expected" : "Google"
         },
         {
             "type" : "status",
             "expectedValue" : "200"
-        },
-        {
-            "type" : "raml",
-            "file" : "api.raml"
         }
     ]
 }
