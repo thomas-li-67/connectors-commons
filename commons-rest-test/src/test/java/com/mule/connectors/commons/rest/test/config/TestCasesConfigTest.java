@@ -1,38 +1,37 @@
 package com.mule.connectors.commons.rest.test.config;
 
-import com.mule.connectors.commons.rest.test.exception.PropertiesFileException;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class TestCasesConfigTest {
 
     private TestCasesConfig config;
 
     @Test
-    public void getTestCasesDirectoryTest() {
-        config = new TestCasesConfig("/cases-config.properties");
-        assertEquals(new File("src/test/resources/cases/ok"), config.getTestCasesDirectory());
+    public void getTestCasesDirectoryTest() throws ConfigurationException {
+        config = new TestCasesConfig("src/test/resources/cases-config.properties");
+        assertThat(config.getTestCasesDirectory(), is(new File("src/test/resources/cases/ok")));
     }
 
     @Test
-    public void getDefaultTestCasesDirectoryTest() {
-        config = new TestCasesConfig("/inexistent.properties");
-        assertEquals(new File("cases"), config.getTestCasesDirectory());
+    public void getDefaultTestCasesDirectoryTest() throws ConfigurationException {
+        config = new TestCasesConfig("inexistent.properties");
+        assertThat(config.getTestCasesDirectory(), is(new File("cases")));
     }
 
-    @Test(expected = PropertiesFileException.class)
-    public void invalidConfigTest() {
-        config = new TestCasesConfig("/invalid.properties");
-        assertEquals(new File("cases"), config.getTestCasesDirectory());
+    @Test
+    public void invalidConfigTest() throws ConfigurationException {
+        config = new TestCasesConfig("invalid.properties");
+        assertThat(config.getTestCasesDirectory(), is(new File("cases")));
     }
 
-    @Test(expected = PropertiesFileException.class)
+
+/*    @Test(expected = PropertiesFileException.class)
     public void inputStreamFailureTest() {
         config = new TestCasesConfig("/invalid.properties") {
 
@@ -83,5 +82,5 @@ public class TestCasesConfigTest {
                 }
             }
         };
-    }
+    }*/
 }
