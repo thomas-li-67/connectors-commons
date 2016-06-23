@@ -11,6 +11,7 @@ import org.hamcrest.Matcher;
 
 import javax.ws.rs.client.Client;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.allOf;
@@ -31,10 +32,10 @@ public class TestCase {
             @JsonProperty(value = "request", required = true) Request request,
             @JsonProperty(value = "after", required = true) List<Request> tearDownRequestList,
             @JsonProperty(value = "assertions", required = true) List<RequestAndResponseAssertion> assertions) {
-        this.setupRequestList = Optional.fromNullable(tearDownRequestList).or(new ArrayList<Request>());
+        this.setupRequestList = Optional.fromNullable(tearDownRequestList).or(Collections.<Request>emptyList());
         this.request = request;
-        this.tearDownRequestList = Optional.fromNullable(setupRequestList).or(new ArrayList<Request>());
-        this.assertions = Optional.fromNullable(assertions).or(new ArrayList<RequestAndResponseAssertion>());
+        this.tearDownRequestList = Optional.fromNullable(setupRequestList).or(Collections.<Request>emptyList());
+        this.assertions = Optional.fromNullable(assertions).or(Collections.<RequestAndResponseAssertion>emptyList());
     }
 
     public void execute(Client client) {
