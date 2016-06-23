@@ -6,11 +6,12 @@ import com.google.common.base.Optional;
 import com.mule.connectors.commons.rest.builder.request.Request;
 import com.mule.connectors.commons.rest.test.assertion.RequestAndResponse;
 import com.mule.connectors.commons.rest.test.assertion.RequestAndResponseAssertion;
+import com.mule.connectors.commons.rest.test.assertion.status.Status;
 import org.hamcrest.Matcher;
 
 import javax.ws.rs.client.Client;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.allOf;
@@ -22,18 +23,31 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class TestCase {
 
     private final Request request;
-    private final List<Matcher<? super RequestAndResponse>> responseAssertions;
+    private final List<RequestAndResponseAssertion> assertions;
+    private final List<Request> setupRequestList;
+    private final List<Request> tearDownRequestList;
 
     @JsonCreator
-    public TestCase(@JsonProperty(value = "request", required = true) Request request,
-            @JsonProperty(value = "assertions", required = true) List<RequestAndResponseAssertion> responseAssertionsParam) {
+    public TestCase(@JsonProperty(value = "before", required = true) List<Request> setupRequestList,
+            @JsonProperty(value = "request", required = true) Request request,
+            @JsonProperty(value = "after", required = true) List<Request> tearDownRequestList,
+            @JsonProperty(value = "assertions", required = true) List<RequestAndResponseAssertion> assertions) {
+        this.setupRequestList = Optional.fromNullable(tearDownRequestList).or(Collections.<Request>emptyList());
         this.request = request;
-        List<Matcher<? super RequestAndResponse>> assertions = new ArrayList<>();
-        assertions.addAll(Optional.fromNullable(responseAssertionsParam).or(new ArrayList<RequestAndResponseAssertion>()));
-        this.responseAssertions = assertions;
+        this.tearDownRequestList = Optional.fromNullable(setupRequestList).or(Collections.<Request>emptyList());
+        this.assertions = Optional.fromNullable(assertions).or(Collections.<RequestAndResponseAssertion>emptyList());
     }
 
     public void execute(Client client) {
-        assertThat(new RequestAndResponse(request, request.execute(client)), allOf(responseAssertions));
+        Matcher<RequestAndResponse> statusMatcher = new Status("2xx");
+        for (Request setupRequest : setupRequestList) {
+            assertThat(new RequestAndResponse(setupRequest, setupRequest.execute(client)), statusMatcher);
+        }
+        List<Matcher<? super RequestAndResponse>> matchers = new ArrayList<>();
+        matchers.addAll(this.assertions);
+        assertThat(new RequestAndResponse(request, request.execute(client)), allOf(matchers));
+        for (Request tearDownRequest : tearDownRequestList) {
+            assertThat(new RequestAndResponse(tearDownRequest, tearDownRequest.execute(client)), statusMatcher);
+        }
     }
 }
