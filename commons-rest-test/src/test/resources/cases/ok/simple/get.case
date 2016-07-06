@@ -5,9 +5,6 @@
             "regex" : "a"
         }],
         "path" : "http://www.google.com",
-        "queryParams" : {
-            "q" : "Viva Peron"
-        },
         "method" :  "GET",
         "body" : "LOREM IPSUM DOLOR SIT AMET"
     }],

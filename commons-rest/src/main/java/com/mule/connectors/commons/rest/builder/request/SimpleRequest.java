@@ -42,7 +42,7 @@ public class SimpleRequest implements Request {
         for (Map.Entry<String, String> entry : getQueryParams().entrySet()) {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
-        logger.debug("SimpleRequest method is {}", getClass().getSimpleName());
+        logger.debug("Request method is {}", getMethod());
         logger.debug("Target path is: {}", target.getUri());
 
         // Adding headers.
@@ -54,7 +54,7 @@ public class SimpleRequest implements Request {
 
         // Executing the request.
         Response response = getMethod().execute(requestBuilder, Optional.fromNullable(getEntity()).or(new Form()), getContentType());
-        logger.debug("Executed SimpleRequest with Entity: {}", getEntity());
+        logger.debug("Executed Request with Entity: {}", getEntity());
 
         // Buffer the stream so that we may examine it again later in the case of an error.
         response.bufferEntity();
