@@ -5,7 +5,6 @@ import com.google.common.base.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -23,18 +22,7 @@ public class DefaultResponseHandler<T> implements ResponseHandler<T> {
         logger.debug("Response Status is {}", status);
         logger.trace("Response body:\n{}", response.readEntity(String.class));
         if (Family.SUCCESSFUL != family) {
-            WebApplicationException exception = null;
-            try {
-                exception = ResponseStatusExceptionMapper.valueOf(Optional.<Enum<?>>fromNullable(status).or(family).name()).createException(response);
-            } catch (IllegalArgumentException unmappedStatusException) {
-                try {
-                    logger.warn("The response status is not mapped.", unmappedStatusException);
-                    exception = ResponseStatusExceptionMapper.valueOf(family.name()).createException(response);
-                } catch (IllegalArgumentException unmappedFamilyException) {
-                    exception = new WebApplicationException(unmappedFamilyException, response);
-                }
-            }
-            throw exception;
+            throw new RequestFailedException(response);
         }
 
         // Parsing the successful response if necessary.

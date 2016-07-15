@@ -6,49 +6,38 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NotAcceptableException;
-import javax.ws.rs.NotAllowedException;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.NotSupportedException;
-import javax.ws.rs.RedirectionException;
-import javax.ws.rs.ServerErrorException;
-import javax.ws.rs.ServiceUnavailableException;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static javax.ws.rs.core.Response.Status.*;
+import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 import static org.easymock.EasyMock.*;
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class DefaultResponseHandlerTest {
 
     private Response response;
-    private int responseStatusCode;
     private Object expectedParsedResponse;
     private Response.StatusType statusType;
 
     @Before
     public void before() {
         response = createMock(Response.class);
-        responseStatusCode = Response.Status.OK.getStatusCode();
         statusType = EasyMock.createMock(Response.StatusType.class);
         expect(response.getStatusInfo()).andReturn(statusType).anyTimes();
     }
 
     @Test
     public void testSimpleHandleResponse() throws IllegalAccessException, InstantiationException {
-        expect(response.getStatus()).andReturn(responseStatusCode);
+        expect(response.getStatus()).andReturn(OK.getStatusCode());
         expect(response.readEntity(eq(String.class))).andReturn("");
-        expect(statusType.getFamily()).andReturn(Response.Status.Family.SUCCESSFUL);
+        expect(statusType.getFamily()).andReturn(SUCCESSFUL);
 
         expectedParsedResponse = new Date();
         expect(response.readEntity(anyObject(GenericType.class))).andReturn(expectedParsedResponse);
@@ -60,9 +49,9 @@ public class DefaultResponseHandlerTest {
 
     @Test
     public void testTypedHandleResponse() throws IllegalAccessException, InstantiationException {
-        expect(response.getStatus()).andReturn(responseStatusCode);
+        expect(response.getStatus()).andReturn(OK.getStatusCode());
         expect(response.readEntity(eq(String.class))).andReturn("");
-        expect(statusType.getFamily()).andReturn(Response.Status.Family.SUCCESSFUL);
+        expect(statusType.getFamily()).andReturn(SUCCESSFUL);
 
         expectedParsedResponse = new HashMap<String, Object>();
         expect(response.readEntity(anyObject(GenericType.class))).andReturn(expectedParsedResponse);
@@ -74,9 +63,9 @@ public class DefaultResponseHandlerTest {
 
     @Test
     public void testVoidHandleResponse() throws IllegalAccessException, InstantiationException {
-        expect(response.getStatus()).andReturn(responseStatusCode);
+        expect(response.getStatus()).andReturn(OK.getStatusCode());
         expect(response.readEntity(eq(String.class))).andReturn("");
-        expect(statusType.getFamily()).andReturn(Response.Status.Family.SUCCESSFUL);
+        expect(statusType.getFamily()).andReturn(SUCCESSFUL);
         replay(response, statusType);
 
         Assert.assertNull(new DefaultResponseHandler().handleResponse(response, null));
@@ -87,92 +76,79 @@ public class DefaultResponseHandlerTest {
     public void testEmptyResponseHandleResponse() throws IllegalAccessException, InstantiationException {
         expect(response.getStatus()).andReturn(Response.Status.NO_CONTENT.getStatusCode());
         expect(response.readEntity(eq(String.class))).andReturn("");
-        expect(statusType.getFamily()).andReturn(Response.Status.Family.SUCCESSFUL);
+        expect(statusType.getFamily()).andReturn(SUCCESSFUL);
         replay(response, statusType);
 
         Assert.assertNull(new DefaultResponseHandler().handleResponse(response, null));
         verify(response, statusType);
     }
 
-    @Test(expected = ForbiddenException.class)
+    @Test
     public void testForbiddenExceptionHandleResponse() {
-        responseStatusCode = Response.Status.FORBIDDEN.getStatusCode();
-        testExceptionHandleResponse();
+        testExceptionHandleResponse(FORBIDDEN.getStatusCode());
     }
 
-    @Test(expected = BadRequestException.class)
+    @Test
     public void testBadRequestExceptionHandleResponse() {
-        responseStatusCode = Response.Status.BAD_REQUEST.getStatusCode();
-        testExceptionHandleResponse();
+        testExceptionHandleResponse(BAD_REQUEST.getStatusCode());
     }
 
-    @Test(expected = NotAuthorizedException.class)
+    @Test
     public void testNotAuthorizedExceptionHandleResponse() {
-        responseStatusCode = Response.Status.UNAUTHORIZED.getStatusCode();
-        testExceptionHandleResponse();
+        testExceptionHandleResponse(UNAUTHORIZED.getStatusCode());
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void testNotFoundExceptionHandleResponse() {
-        responseStatusCode = Response.Status.NOT_FOUND.getStatusCode();
-        testExceptionHandleResponse();
+        testExceptionHandleResponse(NOT_FOUND.getStatusCode());
     }
 
-    @Test(expected = NotAllowedException.class)
+    @Test
     public void testNotAllowedExceptionHandleResponse() {
-        responseStatusCode = Response.Status.METHOD_NOT_ALLOWED.getStatusCode();
-        testExceptionHandleResponse();
+        testExceptionHandleResponse(METHOD_NOT_ALLOWED.getStatusCode());
     }
 
-    @Test(expected = NotAcceptableException.class)
+    @Test
     public void testNotAcceptableExceptionHandleResponse() {
-        responseStatusCode = Response.Status.NOT_ACCEPTABLE.getStatusCode();
-        testExceptionHandleResponse();
+        testExceptionHandleResponse(NOT_ACCEPTABLE.getStatusCode());
     }
 
-    @Test(expected = NotSupportedException.class)
+    @Test
     public void testNotSupportedExceptionHandleResponse() {
-        responseStatusCode = Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode();
-        testExceptionHandleResponse();
+        testExceptionHandleResponse(UNSUPPORTED_MEDIA_TYPE.getStatusCode());
     }
 
-    @Test(expected = InternalServerErrorException.class)
+    @Test
     public void testInternalServerErrorExceptionHandleResponse() {
-        responseStatusCode = Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
-        testExceptionHandleResponse();
+        testExceptionHandleResponse(INTERNAL_SERVER_ERROR.getStatusCode());
     }
 
-    @Test(expected = ServiceUnavailableException.class)
+    @Test
     public void testServiceUnavailableExceptionHandleResponse() {
-        responseStatusCode = Response.Status.SERVICE_UNAVAILABLE.getStatusCode();
-        testExceptionHandleResponse();
+        testExceptionHandleResponse(SERVICE_UNAVAILABLE.getStatusCode());
     }
 
-    @Test(expected = RedirectionException.class)
+    @Test
     public void testRedirectionExceptionHandleResponse() {
-        responseStatusCode = Response.Status.TEMPORARY_REDIRECT.getStatusCode();
-        testExceptionHandleResponse();
+        testExceptionHandleResponse(TEMPORARY_REDIRECT.getStatusCode());
     }
 
-    @Test(expected = ClientErrorException.class)
+    @Test
     public void testUnmappedClientErrorExceptionHandleResponse() {
-        responseStatusCode = Response.Status.EXPECTATION_FAILED.getStatusCode();
-        testExceptionHandleResponse();
+        testExceptionHandleResponse(EXPECTATION_FAILED.getStatusCode());
     }
 
-    @Test(expected = ServerErrorException.class)
+    @Test
     public void testUnmappedServerErrorExceptionHandleResponse() {
-        responseStatusCode = Response.Status.BAD_GATEWAY.getStatusCode();
-        testExceptionHandleResponse();
+        testExceptionHandleResponse(BAD_GATEWAY.getStatusCode());
     }
 
-    @Test(expected = WebApplicationException.class)
+    @Test
     public void testUnmappedExceptionHandleResponse() {
-        responseStatusCode = 105;
-        testExceptionHandleResponse();
+        testExceptionHandleResponse(105);
     }
 
-    public void testExceptionHandleResponse() {
+    public void testExceptionHandleResponse(int responseStatusCode) {
         Response.Status mappedStatus = Response.Status.fromStatusCode(responseStatusCode);
         Response.Status.Family family = mappedStatus == null ? Response.Status.Family.INFORMATIONAL : mappedStatus.getFamily();
         expect(response.getStatus()).andReturn(responseStatusCode).anyTimes();
@@ -182,6 +158,12 @@ public class DefaultResponseHandlerTest {
         expect(response.readEntity(eq(String.class))).andReturn("");
         replay(response, statusType);
 
-        new DefaultResponseHandler().handleResponse(response, null);
+        try {
+            new DefaultResponseHandler().handleResponse(response, null);
+            fail("Expected an exception here.");
+        } catch(RequestFailedException e) {
+            assertThat(e.getResponse(), is(response));
+            assertThat(e.getStatus(), is(responseStatusCode));
+        }
     }
 }
