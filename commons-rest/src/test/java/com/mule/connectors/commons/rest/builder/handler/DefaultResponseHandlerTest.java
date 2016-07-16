@@ -149,19 +149,18 @@ public class DefaultResponseHandlerTest {
     }
 
     public void testExceptionHandleResponse(int responseStatusCode) {
-        Response.Status mappedStatus = Response.Status.fromStatusCode(responseStatusCode);
-        Response.Status.Family family = mappedStatus == null ? Response.Status.Family.INFORMATIONAL : mappedStatus.getFamily();
-        expect(response.getStatus()).andReturn(responseStatusCode).anyTimes();
-        expect(statusType.getFamily()).andReturn(family).anyTimes();
-        expect(statusType.getStatusCode()).andReturn(responseStatusCode).anyTimes();
-        expect(statusType.getReasonPhrase()).andReturn("").anyTimes();
-        expect(response.readEntity(eq(String.class))).andReturn("");
-        replay(response, statusType);
-
         try {
+            Response.Status mappedStatus = Response.Status.fromStatusCode(responseStatusCode);
+            Response.Status.Family family = mappedStatus == null ? Response.Status.Family.INFORMATIONAL : mappedStatus.getFamily();
+            expect(response.getStatus()).andReturn(responseStatusCode).anyTimes();
+            expect(statusType.getFamily()).andReturn(family).anyTimes();
+            expect(statusType.getStatusCode()).andReturn(responseStatusCode).anyTimes();
+            expect(statusType.getReasonPhrase()).andReturn("").anyTimes();
+            expect(response.readEntity(eq(String.class))).andReturn("");
+            replay(response, statusType);
             new DefaultResponseHandler().handleResponse(response, null);
             fail("Expected an exception here.");
-        } catch(RequestFailedException e) {
+        } catch (RequestFailedException e) {
             assertThat(e.getResponse(), is(response));
             assertThat(e.getStatus(), is(responseStatusCode));
         }
