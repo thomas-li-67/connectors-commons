@@ -163,5 +163,5 @@
         <developerConnection>scm:git:git@github.com:mulesoft/connectors-commons.git</developerConnection>
         <url>https://github.com/mulesoft/connectors-commons</url>
       <tag>HEAD</tag>
-  </scm>
+    </scm>
 </project>
