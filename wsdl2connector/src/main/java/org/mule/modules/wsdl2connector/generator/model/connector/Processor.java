@@ -1,10 +1,12 @@
 package org.mule.modules.wsdl2connector.generator.model.connector;
 
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import org.mule.modules.wsdl2connector.generator.model.ModeledMember;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.joining;
+import static com.google.common.collect.Lists.transform;
 
 public class Processor extends ModeledMember {
 
@@ -18,7 +20,12 @@ public class Processor extends ModeledMember {
     }
 
     public String getParameterNames() {
-        return parameters.stream().map(Parameter::getName).collect(joining(", "));
+       return Joiner.on(", ").join(transform(parameters, new Function<Parameter, String>() {
+
+            public String apply(Parameter parameter) {
+                return parameter.getName();
+            }
+        }));
     }
 
     public String getReturnType() {
