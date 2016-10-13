@@ -1,6 +1,8 @@
 package org.mule.modules.wsdl2connector.generator;
 
 import org.apache.maven.plugin.Mojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.mule.modules.wsdl2connector.Configuration;
 import org.mule.modules.wsdl2connector.generator.io.ClassWriter;
 import org.mule.modules.wsdl2connector.generator.io.ClientClassReader;
 import org.mule.modules.wsdl2connector.generator.io.ConnectorClassReader;
@@ -21,31 +23,44 @@ public class ConnectorGenerator {
     /**
      * Generates sources.
      */
-    public void generate(String basePath, String serviceFullyQualifiedName, String clientRetrievalMethod, String basePackage) {
+    public void generate(Configuration conf) throws MojoExecutionException {
+        ClassWriter classWriter = new ClassWriter(mojo, conf.getBasePath());
         log("Retrieving client class.");
-        String clientFullyQualifiedName = new ClientClassReader(mojo).read(basePath, serviceFullyQualifiedName, clientRetrievalMethod);
+        String clientFullyQualifiedName = new ClientClassReader(mojo).read(conf.getBasePath(), conf.getServiceClass(), conf.getClientRetrievalMethod());
         log("Writing connector classes.");
-        ClassWriter classWriter = new ClassWriter(mojo, basePath);
-        BaseConfigClass baseConfigClass = new BaseConfigClass(basePackage, clientFullyQualifiedName);
+        BaseConfigClass baseConfigClass = new BaseConfigClass(conf.getBasePackage(), clientFullyQualifiedName);
         classWriter.writeClass(baseConfigClass);
         log("Base config class class created.");
-        ConcreteConfigClass kerberosConfigClass = new ConcreteConfigClass("KerberosConfig", baseConfigClass, serviceFullyQualifiedName, clientRetrievalMethod);
-        classWriter.writeClass("XRMSpnegoClientAction", "XRMSpnegoClientAction", kerberosConfigClass);
-        log("XRMSpnegoClientAction class created.");
-        classWriter.writeClass("KerberosConfigClass", kerberosConfigClass);
-        log("Kerberos config class created.");
-        ConcreteConfigClass ntlmConfigClass =  new ConcreteConfigClass("NTLMConfig", baseConfigClass, serviceFullyQualifiedName, clientRetrievalMethod);
-        classWriter.writeClass("NTLMAuthenticator", "NTLMAuthenticator", kerberosConfigClass);
-        log("NTLMAuthenticator class created.");
-        classWriter.writeClass("NTLMConfigClass", ntlmConfigClass);
-        log("NTLM config class created.");
-        classWriter.writeClass(new ConnectorClassReader(basePackage).read(baseConfigClass, basePath, clientFullyQualifiedName));
+        generateConfiguration(conf, classWriter, baseConfigClass);
+        classWriter.writeClass(new ConnectorClassReader(conf.getBasePackage()).read(baseConfigClass, conf.getBasePath(), clientFullyQualifiedName));
         log("Connector class created.");
+    }
+
+    public void generateConfiguration(Configuration conf, ClassWriter classWriter, BaseConfigClass baseConfigClass) throws MojoExecutionException {
+
+        switch (conf.getType()) {
+            case KERBEROS:
+                ConcreteConfigClass kerberosConfigClass = new ConcreteConfigClass("KerberosConfig", baseConfigClass, conf.getServiceClass(), conf.getClientRetrievalMethod());
+                classWriter.writeClass("XRMSpnegoClientAction", "XRMSpnegoClientAction", kerberosConfigClass);
+                log("XRMSpnegoClientAction class created.");
+                classWriter.writeClass("KerberosConfigClass", kerberosConfigClass);
+                log("Kerberos config class created.");
+                break;
+
+            case NTLM:
+                ConcreteConfigClass ntlmConfigClass = new ConcreteConfigClass("NTLMConfig", baseConfigClass, conf.getServiceClass(), conf.getClientRetrievalMethod());
+                classWriter.writeClass("NTLMAuthenticator", "NTLMAuthenticator", ntlmConfigClass);
+                log("NTLMAuthenticator class created.");
+                classWriter.writeClass("NTLMConfigClass", ntlmConfigClass);
+                log("NTLM config class created.");
+                break;
+            default:
+                throw new MojoExecutionException("Invalid type.");
+        }
     }
 
     private void log(String message) {
         mojo.getLog().info(message);
     }
-
 
 }
