@@ -1,20 +1,24 @@
 package $modeledClass.basePackage;
 
-import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
-import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.mule.api.annotations.Configurable;
 import org.mule.api.annotations.components.ConnectionManagement;
 import org.mule.api.annotations.display.Placement;
 
-import javax.xml.ws.BindingProvider;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.apache.cxf.Bus;
+import org.apache.cxf.BusFactory;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.NTCredentials;
+import org.apache.cxf.transport.http.asyncclient.AsyncHTTPConduit;
+import org.apache.http.impl.nio.client.DefaultHttpAsyncClient;
+
+import java.io.IOException;
+
 
 #foreach($import in $modeledClass.imports)
 import ${import};
@@ -48,26 +52,27 @@ public class ${modeledClass.name} extends ${modeledClass.baseConfigClass.name} {
     }
 
 public static void configureCXF(final String username, final String password, final String domain, $modeledClass.service service ) {
-        Authenticator.setDefault(new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return (new PasswordAuthentication(username + "@" + domain, password.toCharArray()));
-            }
-        });
+
+        Bus bus = BusFactory.getDefaultBus();
+        bus.setProperty( "use.async.http.conduit", "true" );
+
         $modeledClass.client port = service.${modeledClass.clientRetrievalMethod}();
-        Client client = ClientProxy.getClient(port);
-        HTTPConduit http = (HTTPConduit) client.getConduit();
-        http.getAuthorization().setUserName(username);
-        http.getAuthorization().setPassword(password);
-        AuthorizationPolicy policy = new AuthorizationPolicy();
-        policy.setUserName(username);
-        policy.setPassword(password);
-        http.setAuthorization(policy);
-        HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-        httpClientPolicy.setConnectionTimeout(36000);
-        httpClientPolicy.setAllowChunking(false);
-        http.setClient(httpClientPolicy);
-        client.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, "http://ec2-52-43-87-110.us-west-2.compute.amazonaws.com:48620/DynamicsGPWebServices/DynamicsGPService.asmx");
+        Client client = ClientProxy.getClient( port );
+                HTTPConduit http = (HTTPConduit)client.getConduit();
+                if ( http instanceof AsyncHTTPConduit ) {
+                    AsyncHTTPConduit conduit = (AsyncHTTPConduit)http;
+                    DefaultHttpAsyncClient defaultHttpAsyncClient;
+                    try {
+                        defaultHttpAsyncClient = conduit.getHttpAsyncClient();
+                    }
+                    catch ( IOException exception ) {
+                        throw new RuntimeException( exception );
+                    }
+                    defaultHttpAsyncClient.getCredentialsProvider().setCredentials( AuthScope.ANY,
+                            new NTCredentials(username, password, "", domain));
+                    conduit.getClient().setAllowChunking( false );
+                    conduit.getClient().setAutoRedirect( true );
+                }
     }
 
 

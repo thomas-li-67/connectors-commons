@@ -49,8 +49,6 @@ public class ConnectorGenerator {
 
             case NTLM:
                 ConcreteConfigClass ntlmConfigClass = new ConcreteConfigClass("NTLMConfig", baseConfigClass, conf.getServiceClass(), conf.getClientRetrievalMethod());
-                classWriter.writeClass("NTLMAuthenticator", "NTLMAuthenticator", ntlmConfigClass);
-                log("NTLMAuthenticator class created.");
                 classWriter.writeClass("NTLMConfigClass", ntlmConfigClass);
                 log("NTLM config class created.");
                 break;
