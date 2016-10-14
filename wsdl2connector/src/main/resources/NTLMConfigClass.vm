@@ -37,7 +37,6 @@ public class ${modeledClass.name} extends ${modeledClass.baseConfigClass.name} {
         logger.info("Configuring NTLM.");
 
         $modeledClass.service service = new ${modeledClass.service}();
-        $modeledClass.client wsClient = service.${modeledClass.clientRetrievalMethod}();
         configureCXF(username, password, domain, service);
         logger.info("Connection ready.");
         return service.${modeledClass.clientRetrievalMethod}();
