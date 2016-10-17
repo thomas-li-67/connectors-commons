@@ -17,6 +17,18 @@ import org.apache.http.auth.NTCredentials;
 import org.apache.cxf.transport.http.asyncclient.AsyncHTTPConduit;
 import org.apache.http.impl.nio.client.DefaultHttpAsyncClient;
 
+import com.microsoft.schemas.dynamics.gp._2006._01.DynamicsGP;
+import com.microsoft.schemas.dynamics.gp._2006._01.DynamicsGP_Service;
+import org.apache.cxf.Bus;
+import org.apache.cxf.BusFactory;
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transport.http.asyncclient.AsyncHTTPConduit;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.NTCredentials;
+import org.apache.http.impl.nio.client.DefaultHttpAsyncClient;
+
 import java.io.IOException;
 
 
@@ -37,9 +49,11 @@ public class ${modeledClass.name} extends ${modeledClass.baseConfigClass.name} {
         logger.info("Configuring NTLM.");
 
         $modeledClass.service service = new ${modeledClass.service}();
-        configureCXF(username, password, domain, service);
+        $modeledClass.client dynamicsGP = service.getLegacyDynamicsGP();
+
+        configureCXF(username, password, domain, dynamicsGP);
         logger.info("Connection ready.");
-        return service.${modeledClass.clientRetrievalMethod}();
+        return dynamicsGP;
     }
 
     public String getDomain() {
@@ -50,28 +64,25 @@ public class ${modeledClass.name} extends ${modeledClass.baseConfigClass.name} {
         this.domain = domain;
     }
 
-public static void configureCXF(final String username, final String password, final String domain, $modeledClass.service service ) {
+public static void configureCXF(final String username, final String password, final String domain, $modeledClass.client dynamicsGP ) {
 
         Bus bus = BusFactory.getDefaultBus();
-        bus.setProperty( "use.async.http.conduit", "true" );
-
-        $modeledClass.client port = service.${modeledClass.clientRetrievalMethod}();
-        Client client = ClientProxy.getClient( port );
-                HTTPConduit http = (HTTPConduit)client.getConduit();
-                if ( http instanceof AsyncHTTPConduit ) {
-                    AsyncHTTPConduit conduit = (AsyncHTTPConduit)http;
-                    DefaultHttpAsyncClient defaultHttpAsyncClient;
-                    try {
-                        defaultHttpAsyncClient = conduit.getHttpAsyncClient();
-                    }
-                    catch ( IOException exception ) {
-                        throw new RuntimeException( exception );
-                    }
-                    defaultHttpAsyncClient.getCredentialsProvider().setCredentials( AuthScope.ANY,
-                            new NTCredentials(username, password, "", domain));
-                    conduit.getClient().setAllowChunking( false );
-                    conduit.getClient().setAutoRedirect( true );
-                }
+        bus.setProperty("use.async.http.conduit", "true");
+        Client client = ClientProxy.getClient(dynamicsGP);
+        HTTPConduit http = (HTTPConduit) client.getConduit();
+        if (http instanceof AsyncHTTPConduit) {
+            AsyncHTTPConduit conduit = (AsyncHTTPConduit) http;
+            DefaultHttpAsyncClient defaultHttpAsyncClient;
+            try {
+                defaultHttpAsyncClient = conduit.getHttpAsyncClient();
+            } catch (IOException exception) {
+                throw new RuntimeException(exception);
+            }
+            defaultHttpAsyncClient.getCredentialsProvider().setCredentials(AuthScope.ANY,
+                    new NTCredentials(username, password, "", domain));
+            conduit.getClient().setAllowChunking(false);
+            conduit.getClient().setAutoRedirect(true);
+        }
     }
 
 
