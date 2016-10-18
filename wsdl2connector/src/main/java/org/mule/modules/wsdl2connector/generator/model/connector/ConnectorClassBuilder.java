@@ -1,5 +1,6 @@
 package org.mule.modules.wsdl2connector.generator.model.connector;
 
+import org.mule.modules.wsdl2connector.generator.io.ClassWriter;
 import org.mule.modules.wsdl2connector.generator.model.config.BaseConfigClass;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.Set;
 
 public class ConnectorClassBuilder {
     private static final List<String> EXCLUDED_IMPORTS = Arrays.asList("void", "boolean", "int", "long", "short", "float", "double", "String");
-    private final String basePackage;
+    public final String basePackage;
     private final String name;
     private final List<Processor> processors = new ArrayList<>();
     private final BaseConfigClass baseConfigClass;

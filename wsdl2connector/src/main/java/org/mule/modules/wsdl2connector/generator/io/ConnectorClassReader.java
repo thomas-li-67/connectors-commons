@@ -23,7 +23,7 @@ public class ConnectorClassReader {
         this.basePackage = basePackage;
     }
 
-    public ConnectorClass read(BaseConfigClass baseConfigClass, String basePath, String clientFullyQualifiedName) {
+    public ConnectorClass read(BaseConfigClass baseConfigClass, String basePath, String clientFullyQualifiedName, ClassWriter classWriter) {
         try {
             Scanner scanner = new Scanner(new File(format("%s/%s.java", basePath, clientFullyQualifiedName.replace(".", "/"))));
             ConnectorClassBuilder connectorClassBuilder = null;
@@ -54,7 +54,7 @@ public class ConnectorClassReader {
                             connectorClass = connectorClassBuilder.build();
                         } else {
                             if (line.endsWith(");")) {
-                                processorBuilder.addToConnector();
+                                processorBuilder.addToConnector(classWriter);
                             }
                         }
                     }

@@ -6,6 +6,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.mule.modules.wsdl2connector.generator.ConnectorGenerator;
 
+import java.io.FileNotFoundException;
+
 /**
  */
 @Mojo(name = "connector-generate")
@@ -15,7 +17,11 @@ public class ConnectorGenerateMojo extends AbstractMojo {
     Configuration configuration;
 
     public void execute() throws MojoExecutionException {
-        new ConnectorGenerator(this).generate(configuration);
+        try {
+            new ConnectorGenerator(this).generate(configuration);
+        } catch (FileNotFoundException e) {
+            throw  new MojoExecutionException(e.getMessage());
+        }
 
     }
 }

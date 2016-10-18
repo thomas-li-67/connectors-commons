@@ -1,0 +1,24 @@
+package $modeledClass.basePackage;
+
+
+public class ${modeledClass.name}  {
+
+#foreach($parameter in $modeledClass.parameters)
+    private ${parameter.type} ${parameter.name};
+#end
+
+#foreach($parameter in ${modeledClass.parameters})
+    public $parameter.type get${parameter.name}(){
+           return $parameter.name;
+    }
+
+#end
+
+#foreach($parameter in ${modeledClass.parameters})
+    public void set${parameter.name}($parameter.type $parameter.name){
+           this.${parameter.name} = $parameter.name;
+    }
+
+#end
+
+}

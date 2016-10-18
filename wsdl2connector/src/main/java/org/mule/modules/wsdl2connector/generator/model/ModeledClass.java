@@ -11,14 +11,15 @@ public class ModeledClass extends ModeledMember {
 
     public ModeledClass(String basePackage, String name, String...imports) {
         this(basePackage, name, Arrays.asList(imports));
-
     }
 
     public ModeledClass(String basePackage, String name, Collection<String> imports) {
         super(name);
         this.basePackage = basePackage;
         Set<String> importSet = new HashSet<>();
-        importSet.addAll(imports);
+        if(imports != null) {
+            importSet.addAll(imports);
+        }
         this.imports = importSet;
     }
 
