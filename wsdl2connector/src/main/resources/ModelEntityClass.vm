@@ -1,0 +1,17 @@
+package $modeledClass.basePackage;
+
+
+public class ${modeledClass.name}  {
+
+
+#foreach($setter in ${modeledClass.setters})
+    ${setter};
+
+#end
+
+#foreach($getter in ${modeledClass.getters})
+    ${getter};
+
+#end
+
+}

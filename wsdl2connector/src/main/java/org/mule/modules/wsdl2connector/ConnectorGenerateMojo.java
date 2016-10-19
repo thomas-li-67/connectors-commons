@@ -17,10 +17,11 @@ public class ConnectorGenerateMojo extends AbstractMojo {
     Configuration configuration;
 
     public void execute() throws MojoExecutionException {
+
         try {
             new ConnectorGenerator(this).generate(configuration);
         } catch (FileNotFoundException e) {
-            throw  new MojoExecutionException(e.getMessage());
+            throw new MojoExecutionException(e.getMessage());
         }
 
     }

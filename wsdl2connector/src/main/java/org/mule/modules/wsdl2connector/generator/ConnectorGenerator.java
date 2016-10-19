@@ -13,8 +13,10 @@ import org.mule.modules.wsdl2connector.generator.model.connector.Parameter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
+import static org.mule.modules.wsdl2connector.generator.model.entity.ModelEntityClassBuilder.writeModelEntityClass;
 
 /**
  * Default domain class that handles the main operation of generating sources.
@@ -40,14 +42,15 @@ public class ConnectorGenerator {
         classWriter.writeClass(baseConfigClass);
         log("Base config class class created.");
         generateConfiguration(conf, classWriter, baseConfigClass);
-        generateModelEntities(conf.getBasePath(), clientFullyQualifiedName);
+        generateModelEntities(conf.getBasePath(), conf.getBasePackage(), clientFullyQualifiedName, classWriter);
         classWriter.writeClass(new ConnectorClassReader(conf.getBasePackage()).read(baseConfigClass, conf.getBasePath(), clientFullyQualifiedName, classWriter));
         log("Connector class created.");
     }
 
-    private void generateModelEntities(String basePath, String clientFullyQualifiedName) throws FileNotFoundException {
+    private void generateModelEntities(String basePath, String basePackage, String clientFullyQualifiedName, ClassWriter classWriter) throws FileNotFoundException {
         Set<Parameter> parameters = new HashSet<>();
         Scanner scanner = new Scanner(new File(format("%s/%s.java", basePath, clientFullyQualifiedName.replace(".", "/"))));
+        HashMap<String, String> createdModelEntities = new HashMap<>();
         while (scanner.hasNext()) {
             String line = scanner.nextLine().trim();
             if (!line.startsWith("@") && !line.startsWith("package ") && !line.isEmpty() && !line.startsWith("/") && !line.startsWith("*") && !line.startsWith("public ") && !line.startsWith("import ")) {
@@ -57,10 +60,9 @@ public class ConnectorGenerator {
                 }
             }
         }
-        for(Parameter p : parameters){
-                p.getType();
-                    //TODO FILTER JAVA.LANG
-                    //TODO GENERATE CLASSES FOR EACH PARAMETER
+        parameters = parameters.stream().filter(p -> p.getType().startsWith("com.")).collect(Collectors.toSet());
+        for (Parameter p : parameters) {
+            writeModelEntityClass(p, classWriter, basePath, basePackage);
         }
 
 

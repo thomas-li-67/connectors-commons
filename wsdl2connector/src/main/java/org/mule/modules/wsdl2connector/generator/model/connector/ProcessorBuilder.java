@@ -5,7 +5,7 @@ import org.mule.modules.wsdl2connector.generator.io.ClassWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mule.modules.wsdl2connector.generator.model.connector.EntityClassBuilder.writeEntityClass;
+import static org.mule.modules.wsdl2connector.generator.model.entity.Setter.EntityClassBuilder.writeEntityClass;
 
 public class ProcessorBuilder {
 
