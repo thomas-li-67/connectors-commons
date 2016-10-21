@@ -7,11 +7,7 @@ import org.mule.modules.wsdl2connector.generator.model.connector.ProcessorBuilde
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 import static java.lang.String.format;
 
@@ -42,12 +38,12 @@ public class ConnectorClassReader {
                                 connectorClassBuilder = new ConnectorClassBuilder(basePackage, imports, baseConfigClass, line.split(" ")[1]);
                             } else {
                                 List<String> elements = Arrays.asList(line.split(" "));
-                                processorBuilder = connectorClassBuilder.getMethodBuilder(extractImport(elements.get(0), imports), elements.get(1).replace("(", "").replace(");", ""));
+                                processorBuilder = connectorClassBuilder.getMethodBuilder(elements.get(0), elements.get(1).replace("(", "").replace(");", ""));
                             }
                         } else {
                             if (!(line.startsWith("}") || line.startsWith(")"))) {
                                 List<String> param = Arrays.asList(line.split(" "));
-                                processorBuilder.addParam(extractImport(param.get(0), imports), param.get(1).replace(",", ""));
+                                processorBuilder.addParam(param.get(0), param.get(1).replace(",", ""));
                             }
                         }
                         if (line.endsWith("}")) {
@@ -66,8 +62,5 @@ public class ConnectorClassReader {
         }
     }
 
-    private String extractImport(String fullyQualifiedName, Set<String> imports) {
-        imports.add(fullyQualifiedName);
-        return fullyQualifiedName.substring(fullyQualifiedName.lastIndexOf(".") + 1);
-    }
+
 }

@@ -1,6 +1,5 @@
 package org.mule.modules.wsdl2connector.generator.model.connector;
 
-import org.mule.modules.wsdl2connector.generator.io.ClassWriter;
 import org.mule.modules.wsdl2connector.generator.model.config.BaseConfigClass;
 
 import java.util.ArrayList;

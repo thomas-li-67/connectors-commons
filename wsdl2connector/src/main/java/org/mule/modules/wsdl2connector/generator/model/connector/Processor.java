@@ -10,11 +10,17 @@ public class Processor extends ModeledMember {
 
     private String returnType;
     private List<Parameter> parameters;
+    private Parameter unifiedParameter;
 
-    public Processor(String name, String returnType, List<Parameter> parameterList) {
+    public Processor(String name, String returnType, List<Parameter> parameterList, Parameter unifiedParameter) {
         super(name);
         this.returnType = returnType;
         this.parameters = parameterList;
+        this.unifiedParameter = unifiedParameter;
+    }
+
+    public Parameter getUnifiedParameter() {
+        return unifiedParameter;
     }
 
     public String getParameterNames() {

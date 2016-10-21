@@ -1,5 +1,6 @@
 package org.mule.modules.wsdl2connector.generator.model.connector;
 
+import org.apache.commons.lang.StringUtils;
 import org.mule.modules.wsdl2connector.generator.model.ModeledMember;
 
 import static java.lang.String.format;
@@ -22,6 +23,13 @@ public class Parameter extends ModeledMember {
         return format("%s %s", type, getName());
     }
 
+    public String getGetterName() {
+        return "get" + StringUtils.capitalize(getName());
+    }
+
+    public String getSetterName() {
+        return "set" + StringUtils.capitalize(getName());
+    }
 
 
     @Override

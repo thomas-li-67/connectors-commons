@@ -7,15 +7,17 @@ public class ${modeledClass.name}  {
     private ${parameter.type} ${parameter.name};
 #end
 
+
 #foreach($parameter in ${modeledClass.parameters})
-    public $parameter.type get${parameter.name}(){
+    public $parameter.type ${parameter.getterName}(){
            return $parameter.name;
     }
 
 #end
 
+
 #foreach($parameter in ${modeledClass.parameters})
-    public void set${parameter.name}($parameter.type $parameter.name){
+    public void ${parameter.setterName}($parameter.type $parameter.name){
            this.${parameter.name} = $parameter.name;
     }
 

@@ -1,6 +1,5 @@
 package org.mule.modules.wsdl2connector.generator.model.entity;
 
-import org.apache.commons.lang.WordUtils;
 import org.mule.modules.wsdl2connector.generator.model.ModeledClass;
 import org.mule.modules.wsdl2connector.generator.model.connector.Parameter;
 

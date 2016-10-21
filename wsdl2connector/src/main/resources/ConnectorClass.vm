@@ -4,12 +4,11 @@ import org.mule.api.annotations.Config;
 import org.mule.api.annotations.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.mule.api.annotations.param.Default;
+import org.mule.api.annotations.param.RefOnly;
 
 import ${modeledClass.baseConfigClass.basePackage}.${modeledClass.baseConfigClass.name};
-
-#foreach($import in $modeledClass.imports)
-import ${import};
-#end
+import ${modeledClass.basePackage}.entities.*;
 
 public abstract class ${modeledClass.name} {
 
@@ -18,9 +17,12 @@ public abstract class ${modeledClass.name} {
 #foreach($processor in ${modeledClass.processors})
 
     @Processor
-    public $processor.returnType ${processor.name}(#foreach($parameter in ${processor.parameters})${parameter}#if(${foreach.hasNext}), #end#end) {
+    public $processor.returnType ${processor.name}(@Default("#[payload]") @RefOnly ${processor.unifiedParameter}) {
         logger.debug("${processor.name} called.");
-        #if(!(${processor.returnType} == "void"))return #{end}getConfig().getClient().${processor.name}(${processor.parameterNames});
+        #if(!(${processor.returnType} == "void"))return #{end}getConfig().getClient().${processor.name}(
+        #foreach($parameter in ${processor.parameters}) ${processor.unifiedParameter.name}.${parameter.getterName}()#if(${foreach.hasNext}), #end
+        #end
+        );
     }
 #end
 
