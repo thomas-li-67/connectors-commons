@@ -1,0 +1,70 @@
+//SUPPORTABILITY TEMPLATE
+
+= Mule <name of the connector> Connector - Support Information
+
+= <Target system name> Information
+
+== Documentation Links
+
+// Links to target system documentation
+
+== Documentation used by the conn dev to build it.
+
+// Links used to develop the connector (tech. references)
+
+= Contacts names
+
+== Developers
+
+=== Development Team Leader
+* mailto:<leader_user>@mulesoft.com[Name of the Leader]
+* slack-user: @<slack_username>
+
+=== Development Team 
+* mailto:<responsible_of_development>@mulesoft.com[Responsible of development name]
+* slack-user: @<slack_username>
+
+== Engineering Manager
+
+* mailto:marcos.nunezcortes@mulesoft.com[Marcos Nuñez Cortes]
+* slack-user: @marcos.nunezcortes
+
+== SME on the platform
+
+//Subject matter expert contact
+
+== Slack Channels
+
+connectors support channel
+https://mulesoft.slack.com/archives/connectors
+
+= Sandbox, Authentication methods, Troubleshooting
+//References to the Internal Technical Reference Document
+
+= Escalation processes
+
+=== JIRA Projects / Components
+
+* Jira Project Key: https://www.mulesoft.org/jira/browse/<jira_project_key>:[jira_project_key]
+
+= General links
+
+== Release notes
+//Please test the links:
+* https://docs.mulesoft.com/release-notes/<connector_name>-release-notes:[<connector_name> Release Notes]
+
+== Documentation for the connector
+
+
+* For the last version: https://docs.mulesoft.com/mule-user-guide/v/3.8/<connector_user_manual> :[Exchange <connector name> User Manual]
+* For earlier versions choose the right branch/tag in https://github.com/mulesoft/<connector_repository>/blob/develop/doc/user-manual.adoc :[user manual doc in GitHub Repo]
+* http://mulesoft.github.io/<connector_github.io>/ :[For the ApiDocs]
+
+== Github project
+
+* https://github.com/mulesoft/<connector_repo> :[<connector_name> GitHub Repo]
+
+== Example github project
+
+* https://github.com/mulesoft/<connector_repo>/tree/develop/demo :[GitHub demo folder]
+* Also available (public) at: http://mulesoft.github.io/<connector github.io>/[<connector name> github.io]
