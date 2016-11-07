@@ -1,60 +1,15 @@
-//
-// This document is a template for an Internal Technical Reference.
-// The goal of the generated document is to allow to install, configure and use a connector to anyone who needs to use it. We're assuming this document we'll be used by an internal Team at Mulesoft with a technical understanding of the "connectivity environment" (especially Engineering and Support teams).
-// Please, if you'd like to modify this template, create a new branch in GitHub with the changes and then create a pull request. Modification are more than welcome! 
-//
+//in case you include images, uncomment:
+//:imagesdir: ./_images
+:toclevels: 2
+= Mule Zuora Connector - Internal Technical Reference Document
+:toc:
 
 
-= Mule <name of the connector> - Internal Technical Reference Document
+NOTE:  For links to the <platform name> technical and functional documentation, debugging explanations and other details, please visit the <connector name> Support INFO document
 
-== <name _of_the_target_system> 
-// Information about the target system
+== Authentication credentials for the connector configuration
 
-=== Documentation links
+You can find the credentials for Zuora in https://github.com/mulesoft/connector-jenkins-configs/tree/master/active/zuora[Jenkins Config GitHub] project.
 
-//Documentation used by the conn dev to build it.
-
-
-== Sandbox
-// We distinguish connectors among three categories:
-// SAAS (Sandbox (infrastructure) provided by the target-system). For example: Concur. Uncomment:
-// SAAS Sandbox
-// === Steps to configure the environment
-// === Initial configuration
-// On-Premise : Sandbox created by the connectivity team or specialized contractor. For example: Siebel, Sharepoint.
-// === Steps to install 
-// === Steps to configure the Sandbox
-// === Initial configuration
-// Standalone: software runnning in the local machine. (Kafka)
-// === Steps to install 
-// === Initial configuration
-
-
-== Authentication methods
-=== Available for the platform
-//For the latest version we support. Enumerate all the authentication methods documented (or link to a reference page).
-=== Currently available in the connector
-// Explain the available current methods (no need to document the configuration, it should be available in the User Manual).
-
-== Troubleshooting
-=== Communication debug 
-// Messages sent to the platform
-== Entry points 
-// Where to put breakpoints.
-// Into a "standard" connector, you can uncomment and complete the next section. For other kinds of connectors (WSDL to Connector, SOAPConnect, etc.) please document. You can modify this standard section and add it as a different section:
-
-// STANDARD DEBUGGING-------------
-//On the connector class <nameOfConnector>Connector.java find the processor you’d like to debug (@Processor). The name of the processor is defined by friendlyName decorator parameter, or if the parameter is absent, by the name of the method.
-
-//for Example, in org.mule.modules.zuora.ZuoraConnector.java
-
-//*   Invoke SOAP Service processor→ is implemented by the method decorated with @Processor(friendlyName = "Invoke SOAP Service")
-
-//*   getExportFileContent processor→ getExportFileContent method decorated by @Processor
-
-
-== Logging from platform side 
-// How to gatther logs into the platform side -target system
-
-
-
+//explain some reasons behind some parts of the implementation
+== Implementation Explanation
