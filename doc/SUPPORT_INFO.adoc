@@ -1,6 +1,7 @@
 //SUPPORTABILITY TEMPLATE
 
 = Mule <name of the connector> Connector - Support Information
+:toc:
 
 = <Target system name> Information
 
@@ -21,8 +22,13 @@
 * slack-user: @<slack_username>
 
 === Development Team 
-* mailto:<responsible_of_development>@mulesoft.com[Responsible of development name]
-* slack-user: @<slack_username>
+* Main developer:
+** mailto:<mail_user>@mulesoft.com[Name]
+** slack-user: @<slack_username>
+* Developer:
+** mailto:<mail_user>@mulesoft.com[Name]
+** slack-user: @<slack_username>
+
 
 == Engineering Manager
 
@@ -38,8 +44,52 @@
 connectors support channel
 https://mulesoft.slack.com/archives/connectors
 
-= Sandbox, Authentication methods, Troubleshooting
-//References to the Internal Technical Reference Document
+== Sandbox
+// We distinguish connectors among three categories:
+// SAAS (Sandbox (infrastructure) provided by the target-system). For example: Concur. Uncomment:
+// SAAS Sandbox
+// === Steps to configure the environment
+// === Initial configuration
+// On-Premise : Sandbox created by the connectivity team or specialized contractor. For example: Siebel, Sharepoint.
+// === Steps to install 
+// === Steps to configure the Sandbox
+// === Initial configuration
+// Standalone: software runnning in the local machine. (Kafka)
+// === Steps to install 
+// === Initial configuration
+
+
+== Authentication methods
+=== Available for the platform
+//For the latest version we support. Enumerate all the authentication methods documented (or link to a reference page).
+=== Currently available in the connector
+// Explain the available current methods (no need to document the configuration, it should be available in the User Manual).
+
+== Troubleshooting
+=== Logging level
+
+*package to log*
+//List of recommended packages to log
+. [small]#<path of the package to log>#
+
+=== Communication debug 
+// Messages sent to the platform
+== Entry points 
+// Where to put breakpoints.
+// Into a "standard" connector, you can uncomment and complete the next section. For other kinds of connectors (WSDL to Connector, SOAPConnect, etc.) please document. You can modify this standard section and add it as a different section:
+
+// STANDARD DEBUGGING-------------
+//On the connector class <nameOfConnector>Connector.java find the processor you’d like to debug (@Processor). The name of the processor is defined by friendlyName decorator parameter, or if the parameter is absent, by the name of the method.
+
+//for Example, in org.mule.modules.zuora.ZuoraConnector.java
+
+//*   Invoke SOAP Service processor→ is implemented by the method decorated with @Processor(friendlyName = "Invoke SOAP Service")
+
+//*   getExportFileContent processor→ getExportFileContent method decorated by @Processor
+
+
+== Logging from platform side 
+// How to gatther logs into the platform side -target system
 
 = Escalation processes
 
@@ -68,3 +118,9 @@ https://mulesoft.slack.com/archives/connectors
 
 * https://github.com/mulesoft/<connector_repo>/tree/develop/demo :[GitHub demo folder]
 * Also available (public) at: http://mulesoft.github.io/<connector github.io>/[<connector name> github.io]
+
+
+== Aditional information
+//information you may require to better understand the connector
+== Known Issues
+// known limitations of the connector. This could extend the information of our release notes.
