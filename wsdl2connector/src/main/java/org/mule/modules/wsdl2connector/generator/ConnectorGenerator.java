@@ -1,11 +1,13 @@
 package org.mule.modules.wsdl2connector.generator;
 
 import org.apache.maven.plugin.Mojo;
-import org.mule.modules.wsdl2connector.generator.io.ClassWriter;
-import org.mule.modules.wsdl2connector.generator.io.ClientClassReader;
-import org.mule.modules.wsdl2connector.generator.io.ConnectorClassReader;
-import org.mule.modules.wsdl2connector.generator.model.config.BaseConfigClass;
-import org.mule.modules.wsdl2connector.generator.model.config.ConcreteConfigClass;
+import org.mule.modules.wsdl2connector.generator.io.reader.ClassReader;
+import org.mule.modules.wsdl2connector.generator.io.writer.ClassWriter;
+import org.mule.modules.wsdl2connector.generator.io.writer.ClassWriterFactory;
+import org.mule.modules.wsdl2connector.generator.model.CxfTarget;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Default domain class that handles the main operation of generating sources.
@@ -21,31 +23,36 @@ public class ConnectorGenerator {
     /**
      * Generates sources.
      */
-    public void generate(String basePath, String serviceFullyQualifiedName, String clientRetrievalMethod, String basePackage) {
-        log("Retrieving client class.");
-        String clientFullyQualifiedName = new ClientClassReader(mojo).read(basePath, serviceFullyQualifiedName, clientRetrievalMethod);
-        log("Writing connector classes.");
-        ClassWriter classWriter = new ClassWriter(mojo, basePath);
-        BaseConfigClass baseConfigClass = new BaseConfigClass(basePackage, clientFullyQualifiedName);
-        classWriter.writeClass(baseConfigClass);
-        log("Base config class class created.");
-        ConcreteConfigClass kerberosConfigClass = new ConcreteConfigClass("KerberosConfig", baseConfigClass, serviceFullyQualifiedName, clientRetrievalMethod);
-        classWriter.writeClass("XRMSpnegoClientAction", "XRMSpnegoClientAction", kerberosConfigClass);
-        log("XRMSpnegoClientAction class created.");
-        classWriter.writeClass("KerberosConfigClass", kerberosConfigClass);
-        log("Kerberos config class created.");
-        ConcreteConfigClass ntlmConfigClass =  new ConcreteConfigClass("NTLMConfig", baseConfigClass, serviceFullyQualifiedName, clientRetrievalMethod);
-        classWriter.writeClass("NTLMAuthenticator", "NTLMAuthenticator", kerberosConfigClass);
-        log("NTLMAuthenticator class created.");
-        classWriter.writeClass("NTLMConfigClass", ntlmConfigClass);
-        log("NTLM config class created.");
-        classWriter.writeClass(new ConnectorClassReader(basePackage).read(baseConfigClass, basePath, clientFullyQualifiedName));
-        log("Connector class created.");
+    public void generate(String basePackage, String classpath, CxfTarget kerberosTarget) {
+
+        // Reading CXF classes.
+        ClassLoader classLoader = new ClassReader(mojo, classpath).read(kerberosTarget);
+
+        ClassWriterFactory writerFactory = new ClassWriterFactory(mojo, classpath, basePackage);
+
+        // Retrieving clients information.
+        ServiceInformation kerberosServiceInformation = new ServiceInformation(classLoader, kerberosTarget);
+
+        List<ClassWriter> writers = new ArrayList<>();
+
+        // Write base config file.
+        writers.add(writerFactory.createBaseConfigWriter());
+
+        // Writing utility class for connector.
+        writers.add(writerFactory.createEndpointNameFilterWriter());
+
+        // Writing connector class.
+        writers.add(writerFactory.createConnectorClassWriter(kerberosServiceInformation.getClientClass()));
+
+        // Write Kerberos config file.
+        writers.add(writerFactory.createXRMSpnegoClientAction());
+        writers.add(writerFactory.createKerberosConfigClassWriter(kerberosServiceInformation));
+
+        // Write parameter files.
+        writers.add(writerFactory.createParameterClassWriter("kerberos", kerberosServiceInformation.getClientClass()));
+        // Write NTLM config file.
+        // Write Metadata files.
+
+        writers.stream().forEach(ClassWriter::write);
     }
-
-    private void log(String message) {
-        mojo.getLog().info(message);
-    }
-
-
 }

@@ -1,4 +1,4 @@
-package ${modeledClass.basePackage};
+package ${basePackage};
 
 import org.apache.ws.security.spnego.DefaultSpnegoClientAction;
 import org.apache.ws.security.spnego.SpnegoClientAction;

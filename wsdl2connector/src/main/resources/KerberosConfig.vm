@@ -1,4 +1,4 @@
-package $modeledClass.basePackage;
+package ${basePackage};
 
 import javax.xml.ws.BindingProvider;
 import org.mule.api.annotations.Configurable;
@@ -14,14 +14,13 @@ import org.mule.api.annotations.components.ConnectionManagement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-#foreach($import in $modeledClass.imports)
-import ${import};
-#end
+import ${clientClassPackage}.${clientClass};
+import ${serviceClassPackage}.${serviceClass};
 
 @ConnectionManagement(configElementName="kerberos-connection-config", friendlyName="Kerberos Connection")
-public class ${modeledClass.name} extends ${modeledClass.baseConfigClass.name} {
+public class KerberosConfig extends BaseConfig<${clientClass}> {
 
-    private static final Logger logger = LoggerFactory.getLogger(${modeledClass.name}.class);
+    private static final Logger logger = LoggerFactory.getLogger(KerberosConfig.class);
 
     @Configurable
     @Placement(order = 3)
@@ -33,13 +32,13 @@ public class ${modeledClass.name} extends ${modeledClass.baseConfigClass.name} {
     @Placement(order = 5)
     private String krb5ConfLocation;
 
-    public $modeledClass.client createClient(String username, String password) {
+    public ${clientClass} createClient(String username, String password) {
         logger.info("Setting system properties.");
         System.setProperty("java.security.auth.login.config", loginConfLocation);
         System.setProperty("java.security.krb5.conf", krb5ConfLocation);
 
         logger.info("Retrieving webservice client.");
-        $modeledClass.client wsClient = new ${modeledClass.service}().${modeledClass.clientRetrievalMethod}();
+        ${clientClass} wsClient = new ${serviceClass}().${clientRetrievalMethod}();
         Client client = ClientProxy.getClient(wsClient);
 
         logger.info("Configuring bus.");
@@ -83,4 +82,8 @@ public class ${modeledClass.name} extends ${modeledClass.baseConfigClass.name} {
         this.spn = spn;
     }
 
+    @Override
+    public String getParamsPackage() {
+        return "kerberos";
+    }
 }
