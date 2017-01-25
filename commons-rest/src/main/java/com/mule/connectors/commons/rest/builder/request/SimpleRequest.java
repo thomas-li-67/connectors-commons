@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
+import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
 public class SimpleRequest implements Request {
@@ -52,8 +53,19 @@ public class SimpleRequest implements Request {
             logger.debug("Header: '{}': {}", entry.getKey(), entry.getValue());
         }
 
+        // Support for application/x-www-form-urlencoded
+        // Body must a Form object instead of default LinkedHashMap so as to be picked by the FormProvider (not JacksonJaxbJsonProvider)
+        Object entity = Optional.fromNullable(getEntity()).or(new Form());
+        if(getContentType().equals(APPLICATION_FORM_URLENCODED) && getEntity() != null) {
+            Form form = new Form();
+            for (Map.Entry<String, Object> entry : ((Map<String, Object>) getEntity()).entrySet()) {
+                form.param(entry.getKey(), String.valueOf(entry.getValue()));
+            }
+            entity = form;
+        }
+
         // Executing the request.
-        Response response = getMethod().execute(requestBuilder, Optional.fromNullable(getEntity()).or(new Form()), getContentType());
+        Response response = getMethod().execute(requestBuilder, entity, getContentType());
         logger.debug("Executed Request with Entity: {}", getEntity());
 
         // Buffer the stream so that we may examine it again later in the case of an error.
