@@ -9,8 +9,10 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
+import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
@@ -53,19 +55,14 @@ public class SimpleRequest implements Request {
             logger.debug("Header: '{}': {}", entry.getKey(), entry.getValue());
         }
 
+        Object entity = Optional.fromNullable(getEntity()).or(new Form());
         // Support for application/x-www-form-urlencoded
         // Body must a Form object instead of default LinkedHashMap so as to be picked by the FormProvider (not JacksonJaxbJsonProvider)
-        Object entity = Optional.fromNullable(getEntity()).or(new Form());
-        if(getContentType().equals(APPLICATION_FORM_URLENCODED) && getEntity() != null) {
-            Form form = new Form();
-            for (Map.Entry<String, Object> entry : ((Map<String, Object>) getEntity()).entrySet()) {
-                form.param(entry.getKey(), String.valueOf(entry.getValue()));
-            }
-            entity = form;
-        }
+        setEntity(getContentType().equals(APPLICATION_FORM_URLENCODED) && Optional.of(entity).isPresent() ?
+                new Form(new MultivaluedHashMap((LinkedHashMap<String, Object>) getEntity())) : entity);
 
         // Executing the request.
-        Response response = getMethod().execute(requestBuilder, entity, getContentType());
+        Response response = getMethod().execute(requestBuilder, getEntity(), getContentType());
         logger.debug("Executed Request with Entity: {}", getEntity());
 
         // Buffer the stream so that we may examine it again later in the case of an error.
@@ -73,6 +70,7 @@ public class SimpleRequest implements Request {
         logger.debug("Response buffered.");
         return response;
     }
+
 
     @Override
     public String getPath() {
