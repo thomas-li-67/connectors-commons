@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
 
 public class SimpleRequest implements Request {
     private static final Logger logger = LoggerFactory.getLogger(SimpleRequest.class);
@@ -55,11 +56,11 @@ public class SimpleRequest implements Request {
             logger.debug("Header: '{}': {}", entry.getKey(), entry.getValue());
         }
 
-        Object entity = Optional.fromNullable(getEntity()).or(new Form());
-        // Support for application/x-www-form-urlencoded
-        // Body must a Form object instead of default LinkedHashMap so as to be picked by the FormProvider (not JacksonJaxbJsonProvider)
-        setEntity(getContentType().equals(APPLICATION_FORM_URLENCODED) && Optional.of(entity).isPresent() ?
-                new Form(new MultivaluedHashMap((LinkedHashMap<String, Object>) getEntity())) : entity);
+        // FIXME: this is mostly a workaround and should be improved.
+        // Support for body form parameters
+        // Body must be a Form object instead of default LinkedHashMap so as to be picked by the FormProvider (not JacksonJaxbJsonProvider)
+        setEntity((getContentType().equals(APPLICATION_FORM_URLENCODED) || getContentType().equals(MULTIPART_FORM_DATA))
+                && (Optional.fromNullable(getEntity())).isPresent() ? new Form(new MultivaluedHashMap((LinkedHashMap<String, Object>) getEntity())) : new Form());
 
         // Executing the request.
         Response response = getMethod().execute(requestBuilder, getEntity(), getContentType());
