@@ -6,6 +6,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
+import static java.util.Arrays.copyOf;
+
 /**
  * Simple {@link ParameterizedType} implementation.
  */
@@ -21,7 +23,7 @@ public class SimpleParameterizedType implements ParameterizedType {
 
     @Override
     public Type[] getActualTypeArguments() {
-        return actualTypeArguments;
+        return copyOf(actualTypeArguments, actualTypeArguments.length, actualTypeArguments.getClass());
     }
 
     @Override
