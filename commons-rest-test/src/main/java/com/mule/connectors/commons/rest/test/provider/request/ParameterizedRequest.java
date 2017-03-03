@@ -2,15 +2,23 @@ package com.mule.connectors.commons.rest.test.provider.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Optional;
 import com.mule.connectors.commons.rest.builder.request.Method;
 import com.mule.connectors.commons.rest.builder.request.SimpleRequest;
 
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.MultivaluedHashMap;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
+import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
+
 public class ParameterizedRequest extends SimpleRequest {
+
     private Map<String, String> placeholderStore = new HashMap<>();
     private List<ResponseTarget> responseTargets = new ArrayList<>();
 
@@ -50,7 +58,8 @@ public class ParameterizedRequest extends SimpleRequest {
 
     @JsonProperty("body")
     public Object getEntity() {
-        return super.getEntity();
+        return (getContentType().equals(APPLICATION_FORM_URLENCODED) || getContentType().equals(MULTIPART_FORM_DATA))
+                && (Optional.fromNullable(super.getEntity())).isPresent() ? new Form(new MultivaluedHashMap((LinkedHashMap<String, Object>) super.getEntity())) : new Form();
     }
 
     @JsonProperty("contentType")
@@ -73,13 +82,12 @@ public class ParameterizedRequest extends SimpleRequest {
             output.put(entry.getKey(), resolvePlaceholders(entry.getValue().toString()));
         }
         return output;
-
     }
 
     private String resolvePlaceholders(String input) {
         String output = input;
         for (Map.Entry<String, String> entry : placeholderStore.entrySet()) {
-            output = input.replace(String.format("${%s}", entry.getKey()), entry.getValue());
+            output = output.replace(String.format("${%s}", entry.getKey()), entry.getValue());
         }
         return output;
     }

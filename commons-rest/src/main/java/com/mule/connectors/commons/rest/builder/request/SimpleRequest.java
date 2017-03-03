@@ -1,6 +1,5 @@
 package com.mule.connectors.commons.rest.builder.request;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,13 +15,14 @@ import java.util.Map;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
 public class SimpleRequest implements Request {
+
     private static final Logger logger = LoggerFactory.getLogger(SimpleRequest.class);
     private final Method method;
     private String path;
     private Map<String, String> headers = new HashMap<>();
     private Map<String, String> queryParams = new HashMap<>();
     private Map<String, String> pathParams = new HashMap<>();
-    private Object entity;
+    private Object entity = new Form();
     private String contentType = APPLICATION_XML;
     private String accept = APPLICATION_XML;
 
@@ -53,7 +53,7 @@ public class SimpleRequest implements Request {
         }
 
         // Executing the request.
-        Response response = getMethod().execute(requestBuilder, Optional.fromNullable(getEntity()).or(new Form()), getContentType());
+        Response response = getMethod().execute(requestBuilder, getEntity(), getContentType());
         logger.debug("Executed Request with Entity: {}", getEntity());
 
         // Buffer the stream so that we may examine it again later in the case of an error.

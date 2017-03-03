@@ -1,10 +1,12 @@
 package com.mule.connectors.commons.rest.builder;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.mule.connectors.commons.rest.builder.handler.DefaultResponseHandler;
 import com.mule.connectors.commons.rest.builder.handler.ResponseHandler;
+import com.mule.connectors.commons.rest.builder.listener.RequestListener;
 import com.mule.connectors.commons.rest.builder.request.SimpleRequest;
-import org.apache.commons.lang3.StringUtils;
+import com.mule.connectors.commons.rest.builder.util.SimpleParameterizedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,10 +16,16 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import static com.mule.connectors.commons.rest.builder.request.Method.*;
+import static com.google.common.base.Strings.nullToEmpty;
+import static com.mule.connectors.commons.rest.builder.request.Method.DELETE;
+import static com.mule.connectors.commons.rest.builder.request.Method.GET;
+import static com.mule.connectors.commons.rest.builder.request.Method.POST;
+import static com.mule.connectors.commons.rest.builder.request.Method.PUT;
+import static java.util.Arrays.asList;
 
 /**
  * Builder class for http requests.<br>
@@ -38,10 +46,11 @@ import static com.mule.connectors.commons.rest.builder.request.Method.*;
  * <ul>
  * <li>Addition of query parameters by using the {@link RequestBuilder#queryParam(String, Object)} or through a {@link MultivaluedMap}.</li>
  * <li>Addition of path parameters by setting them in the path parameter on the static method and assigning them to a placeholder and then setting them using
- * {@link RequestBuilder#pathParam(String, String)}.</li>
+ * {@link RequestBuilder#pathParam(String, Object)}.</li>
  * <li>Setting an entity object to be sent as part of the request using {@link RequestBuilder#entity(Object)} for the object and {@link RequestBuilder#contentType(String)} for the
  * content type (default is APPLICATION_XML).</li>
  * <li>Handling the {@link Response} object using a {@link ResponseHandler}.</li>
+ * <li>Setting the response type of the request by using the {@link RequestBuilder#responseType(Type, Type...)} </li>
  * <li>Setting headers using {@link RequestBuilder#header(String, Object)}.</li>
  * </ul>
  *
@@ -55,6 +64,7 @@ public class RequestBuilder<T> {
     private final SimpleRequest request;
     private Type responseType;
     private ResponseHandler<T> responseHandler = new DefaultResponseHandler<>();
+    private List<RequestListener> requestListeners = new ArrayList<>();
 
     private RequestBuilder(Client client, SimpleRequest request, String path) {
         this.client = client;
@@ -62,8 +72,8 @@ public class RequestBuilder<T> {
         this.request.setPath(path);
     }
 
-    public RequestBuilder<T> responseType(Type responseType) {
-        this.responseType = responseType;
+    public RequestBuilder<T> responseType(Type rawType, Type... parameterTypes) {
+        this.responseType = new SimpleParameterizedType(rawType, parameterTypes);
         return this;
     }
 
@@ -73,7 +83,7 @@ public class RequestBuilder<T> {
     }
 
     public RequestBuilder<T> header(String key, Object value) {
-        if (Optional.fromNullable(value).isPresent() && StringUtils.isNotEmpty(value.toString())) {
+        if (Optional.fromNullable(value).isPresent() && !value.toString().isEmpty()) {
             this.request.addHeader(key, value.toString());
         }
         return this;
@@ -85,7 +95,7 @@ public class RequestBuilder<T> {
     }
 
     public RequestBuilder<T> queryParam(String key, Object value) {
-        if (Optional.fromNullable(value).isPresent() && StringUtils.isNotEmpty(value.toString())) {
+        if (Optional.fromNullable(value).isPresent() && !nullToEmpty(value.toString()).isEmpty()) {
             this.request.addQueryParam(key, value.toString());
         }
         return this;
@@ -98,8 +108,10 @@ public class RequestBuilder<T> {
         return this;
     }
 
-    public RequestBuilder<T> pathParam(String key, String value) {
-        this.request.addPathParam(key, value);
+    public RequestBuilder<T> pathParam(String key, Object value) {
+        if (Optional.fromNullable(value).isPresent() && !Strings.nullToEmpty(value.toString()).isEmpty()) {
+            this.request.addPathParam(key, value.toString());
+        }
         return this;
     }
 
@@ -118,7 +130,16 @@ public class RequestBuilder<T> {
         return this;
     }
 
+    public RequestBuilder<T> onBeforeRequest(RequestListener... listeners) {
+        requestListeners.addAll(asList(listeners));
+        return this;
+    }
+
     public T execute() {
+        for (RequestListener listener : requestListeners) {
+            logger.debug("Request Listener {} found. Providing request.", listener.getClass());
+            listener.handle(request);
+        }
         Response response = request.execute(client);
         logger.debug("Parsing response.");
         return responseHandler.handleResponse(response, responseType);
