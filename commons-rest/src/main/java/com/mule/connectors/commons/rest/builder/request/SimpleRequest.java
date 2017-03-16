@@ -1,5 +1,8 @@
 package com.mule.connectors.commons.rest.builder.request;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
+import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,11 +11,14 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
+import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
+import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
 
 public class SimpleRequest implements Request {
 
@@ -25,6 +31,8 @@ public class SimpleRequest implements Request {
     private Object entity = new Form();
     private String contentType = APPLICATION_XML;
     private String accept = APPLICATION_XML;
+
+    private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JaxbAnnotationModule());
 
     public SimpleRequest(Method method) {
         this.method = method;
@@ -51,6 +59,10 @@ public class SimpleRequest implements Request {
             requestBuilder.header(entry.getKey(), entry.getValue());
             logger.debug("Header: '{}': {}", entry.getKey(), entry.getValue());
         }
+
+        if((getContentType().equals(APPLICATION_FORM_URLENCODED) || getContentType().equals(MULTIPART_FORM_DATA))
+                && (Optional.fromNullable(getEntity())).isPresent())
+            setEntity(new Form(new MultivaluedHashMap(objectMapper.convertValue(getEntity(), Map.class))));
 
         // Executing the request.
         Response response = getMethod().execute(requestBuilder, getEntity(), getContentType());
