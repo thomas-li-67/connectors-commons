@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+  
+  <body>
+    <main class="page-content" aria-label="Content">
+        <div id="content">
+            <div id="left"></div>
+            <div id="right">
+                <div class="center-content">
+                    <h1 class="title"> {% if page.title %}{{ page.title | escape }}{% else %}{{ site.title | escape }}{% endif %} </h1>
+                    {{ content }}
+		</div>
+            </div>
+        </div>
+    </main>
+
+
+  </body>
+
+</html>
