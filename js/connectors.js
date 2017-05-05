@@ -86,13 +86,12 @@
 
     }
 
-    function create_row(row) {
+    function create_row(row, connector_repo) {
         var version = row["id"];
-        var connector_repo = row["repoName"];
         var apidoc = get_api_doc_link(row["api_doc"], version, connector_repo);
         var demos = get_demos_links(row["demos"], version, connector_repo);
         var func_doc = get_functional_doc_links(row["fun_doc"], version, connector_repo);
-        
+
         return create_version_column(version) + create_apidoc_column(apidoc) + create_apidoc_column(func_doc) + create_samples_column(demos);
     }
 
@@ -101,12 +100,13 @@
             var odd_even = false;
             connector_name = data["name"];
             data = data["versions"];
+            repo_name = data["repoName"]
             $.each(data, function() {
                 var tbl_row = "";
                 //$.each(this, function(k , v) {
                 //    tbl_row += "<td>"+v+"</td>";
                 //});
-                tbl_row = create_row(this);
+                tbl_row = create_row(this, repo_name);
                 tbl_body += "<tr class=\""+( odd_even ? "odd" : "even")+"\">"+tbl_row+"</tr>";
                 odd_even = !odd_even;
             });
