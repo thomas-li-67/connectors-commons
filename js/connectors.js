@@ -63,7 +63,7 @@
             if ( "url" in this && this["url"]) {
                 demos_url = this["url"];
             }
-            demos_links.append( demos_url + "/" + this["name"]);
+            demos_links.push( demos_url + "/" + this["name"]);
         });
         return demos_links;
     }
@@ -110,7 +110,7 @@
                 tbl_body += "<tr class=\""+( odd_even ? "odd" : "even")+"\">"+tbl_row+"</tr>";
                 odd_even = !odd_even;
             });
-            $("#connectors-table tbody").push(tbl_body);
+            $("#connectors-table tbody").append(tbl_body);
 	
         }
     function links_behav() {
