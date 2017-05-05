@@ -1,5 +1,5 @@
 
-    var MULESOFT_GITHUBIO_URL = "https://mulesoft.github.io'";
+    var MULESOFT_GITHUBIO_URL = "https://mulesoft.github.io";
     var APIDOC_DEFAULT_FOLDER = "apidocs";
     var DEMOS_DEFAULT_FOLDER = "demo";
     var FUNCT_DOC_DEFAULT_FOLDER = "functional";
