@@ -99,8 +99,8 @@
             var tbl_body = "";
             var odd_even = false;
             connector_name = data["name"];
-            data = data["versions"];
             repo_name = data["repoName"]
+            data = data["versions"];
             $.each(data, function() {
                 var tbl_row = "";
                 //$.each(this, function(k , v) {
