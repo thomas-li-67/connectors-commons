@@ -37,7 +37,7 @@
     }
 
     function get_githubio_io_version_link( version_id, connector_repo) {
-        return MULESOFT_GITHUBIO_URL + "/" + connector_repo + "/version_id" ;
+        return MULESOFT_GITHUBIO_URL + "/" + connector_repo + "/" + version_id ;
 
     }
 
@@ -110,7 +110,7 @@
                 tbl_body += "<tr class=\""+( odd_even ? "odd" : "even")+"\">"+tbl_row+"</tr>";
                 odd_even = !odd_even;
             });
-            $("#connectors-table tbody").append(tbl_body);
+            $("#connectors-table tbody").push(tbl_body);
 	
         }
     function links_behav() {
