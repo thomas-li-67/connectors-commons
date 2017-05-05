@@ -69,7 +69,7 @@
     }
 
     function get_functional_doc_links(function_doc_node, version_id, connector_repo) {
-        var func_doc_url = get_githubio_io_version_link(version_id, connector_repo) + "/" + FUNCT_DOC_DEFAULT_FOLDER;
+        var func_doc_url = get_githubio_io_version_link(version_id, connector_repo) ;
         var user_manual_doc = USER_MANUAL_DEFAULT_DOC;
 
         if (function_doc_node) {
