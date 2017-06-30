@@ -31,7 +31,10 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    margin: 80 160;
+    margin-top: 80px;
+    margin-right: 160px;
+    margin-bottom: 80px;
+    margin-left: 160px;
 }
 
 .center-content{
