@@ -15,7 +15,7 @@ import org.mule.connectors.commons.template.service.ConnectorService;
  * @param <CONNECTION> The type of connection to be handled by these operations.
  * @param <SERVICE> The service that handles the operations connection to the remote system.
  */
-public class ConnectorOperations<CONFIG extends ConnectorConfig, CONNECTION extends ConnectorConnection, SERVICE extends ConnectorService<CONFIG, CONNECTION>> {
+public class ConnectorOperations<CONFIG extends ConnectorConfig, CONNECTION extends ConnectorConnection, SERVICE extends ConnectorService> {
 
     private final BiFunction<CONFIG, CONNECTION, SERVICE> serviceConstructor;
 

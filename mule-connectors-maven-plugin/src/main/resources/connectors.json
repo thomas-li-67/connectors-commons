@@ -63,7 +63,6 @@
       "name" : "remedy",
       "description" : "BMC Remedy",
       "location" : "git@github.com:mulesoft/remedy-connector.git"
-
     },
     {
       "name" : "box",
@@ -263,7 +262,7 @@
       "name" : "rosetta-net",
       "description" : "RosettaNet",
       "location" : "git@github.com:mulesoft/rosetta-net-connector.git"
-      
+
     },
     {
       "name" : "concur",
